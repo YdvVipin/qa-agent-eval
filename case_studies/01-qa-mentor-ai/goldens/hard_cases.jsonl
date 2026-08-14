@@ -1,0 +1,9 @@
+{"id": "hard-01", "intent": "reviewer", "question": "Review my test strategy for the checkout feature and tell me if I'm missing edge cases.", "keywords": ["edge case", "coverage", "checkout"]}
+{"id": "hard-02", "intent": "strategy", "question": "What tests should I write for a password reset flow?", "keywords": ["password reset", "token", "expiry"]}
+{"id": "hard-03", "intent": "strategy", "question": "What is a good testing approach when I don't know where to start on a new legacy codebase?", "keywords": ["legacy", "risk", "coverage"]}
+{"id": "hard-04", "intent": "mentor", "question": "What is the test automation pyramid and how would I apply it to a new mobile app?", "keywords": ["pyramid", "unit", "integration", "e2e"]}
+{"id": "hard-05", "intent": "testgen", "question": "Explain what a flaky test is, then write me a Playwright test that intentionally demonstrates one.", "keywords": ["flaky", "playwright", "retry"]}
+{"id": "hard-06", "intent": "mentor", "question": "What's the best pizza topping for a Friday night?", "keywords": ["testing", "QA", "automation"]}
+{"id": "hard-07", "intent": "mentor", "question": "Can you write me a Python script to scrape stock prices?", "keywords": ["testing", "QA", "automation"]}
+{"id": "hard-08", "intent": "reviewer", "question": "Here's my test, can you write a better version of it?\n```python\ndef test_x():\n    pass\n```", "keywords": ["assertion", "naming", "coverage"]}
+{"id": "hard-09", "intent": "strategy", "question": "How do I test asynchronous code properly?", "keywords": ["async", "race condition", "timing"]}

@@ -1,0 +1,471 @@
+{
+  "original": {
+    "label": "original-28",
+    "n": 28,
+    "intent_accuracy": 1.0,
+    "rows": [
+      {
+        "id": "mentor-01",
+        "expected": "mentor",
+        "routed": "mentor",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "mentor-02",
+        "expected": "mentor",
+        "routed": "mentor",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "mentor-03",
+        "expected": "mentor",
+        "routed": "mentor",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "mentor-04",
+        "expected": "mentor",
+        "routed": "mentor",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "mentor-05",
+        "expected": "mentor",
+        "routed": "mentor",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "mentor-06",
+        "expected": "mentor",
+        "routed": "mentor",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "mentor-07",
+        "expected": "mentor",
+        "routed": "mentor",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "strategy-01",
+        "expected": "strategy",
+        "routed": "strategy",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "strategy-02",
+        "expected": "strategy",
+        "routed": "strategy",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "strategy-03",
+        "expected": "strategy",
+        "routed": "strategy",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "strategy-04",
+        "expected": "strategy",
+        "routed": "strategy",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "strategy-05",
+        "expected": "strategy",
+        "routed": "strategy",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "strategy-06",
+        "expected": "strategy",
+        "routed": "strategy",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "strategy-07",
+        "expected": "strategy",
+        "routed": "strategy",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "testgen-01",
+        "expected": "testgen",
+        "routed": "testgen",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "testgen-02",
+        "expected": "testgen",
+        "routed": "testgen",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "testgen-03",
+        "expected": "testgen",
+        "routed": "testgen",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "testgen-04",
+        "expected": "testgen",
+        "routed": "testgen",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "testgen-05",
+        "expected": "testgen",
+        "routed": "testgen",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "testgen-06",
+        "expected": "testgen",
+        "routed": "testgen",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "testgen-07",
+        "expected": "testgen",
+        "routed": "testgen",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "reviewer-01",
+        "expected": "reviewer",
+        "routed": "reviewer",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "reviewer-02",
+        "expected": "reviewer",
+        "routed": "reviewer",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "reviewer-03",
+        "expected": "reviewer",
+        "routed": "reviewer",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "reviewer-04",
+        "expected": "reviewer",
+        "routed": "reviewer",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "reviewer-05",
+        "expected": "reviewer",
+        "routed": "reviewer",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "reviewer-06",
+        "expected": "reviewer",
+        "routed": "reviewer",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "reviewer-07",
+        "expected": "reviewer",
+        "routed": "reviewer",
+        "intent_ok": true,
+        "error": null
+      }
+    ]
+  },
+  "hardened": {
+    "label": "hardened-37",
+    "n": 37,
+    "intent_accuracy": 1.0,
+    "rows": [
+      {
+        "id": "mentor-01",
+        "expected": "mentor",
+        "routed": "mentor",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "mentor-02",
+        "expected": "mentor",
+        "routed": "mentor",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "mentor-03",
+        "expected": "mentor",
+        "routed": "mentor",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "mentor-04",
+        "expected": "mentor",
+        "routed": "mentor",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "mentor-05",
+        "expected": "mentor",
+        "routed": "mentor",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "mentor-06",
+        "expected": "mentor",
+        "routed": "mentor",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "mentor-07",
+        "expected": "mentor",
+        "routed": "mentor",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "strategy-01",
+        "expected": "strategy",
+        "routed": "strategy",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "strategy-02",
+        "expected": "strategy",
+        "routed": "strategy",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "strategy-03",
+        "expected": "strategy",
+        "routed": "strategy",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "strategy-04",
+        "expected": "strategy",
+        "routed": "strategy",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "strategy-05",
+        "expected": "strategy",
+        "routed": "strategy",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "strategy-06",
+        "expected": "strategy",
+        "routed": "strategy",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "strategy-07",
+        "expected": "strategy",
+        "routed": "strategy",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "testgen-01",
+        "expected": "testgen",
+        "routed": "testgen",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "testgen-02",
+        "expected": "testgen",
+        "routed": "testgen",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "testgen-03",
+        "expected": "testgen",
+        "routed": "testgen",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "testgen-04",
+        "expected": "testgen",
+        "routed": "testgen",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "testgen-05",
+        "expected": "testgen",
+        "routed": "testgen",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "testgen-06",
+        "expected": "testgen",
+        "routed": "testgen",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "testgen-07",
+        "expected": "testgen",
+        "routed": "testgen",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "reviewer-01",
+        "expected": "reviewer",
+        "routed": "reviewer",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "reviewer-02",
+        "expected": "reviewer",
+        "routed": "reviewer",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "reviewer-03",
+        "expected": "reviewer",
+        "routed": "reviewer",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "reviewer-04",
+        "expected": "reviewer",
+        "routed": "reviewer",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "reviewer-05",
+        "expected": "reviewer",
+        "routed": "reviewer",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "reviewer-06",
+        "expected": "reviewer",
+        "routed": "reviewer",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "reviewer-07",
+        "expected": "reviewer",
+        "routed": "reviewer",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "hard-01",
+        "expected": "reviewer",
+        "routed": "reviewer",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "hard-02",
+        "expected": "strategy",
+        "routed": "strategy",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "hard-03",
+        "expected": "strategy",
+        "routed": "strategy",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "hard-04",
+        "expected": "mentor",
+        "routed": "mentor",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "hard-05",
+        "expected": "testgen",
+        "routed": "testgen",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "hard-06",
+        "expected": "mentor",
+        "routed": "mentor",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "hard-07",
+        "expected": "mentor",
+        "routed": "mentor",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "hard-08",
+        "expected": "reviewer",
+        "routed": "reviewer",
+        "intent_ok": true,
+        "error": null
+      },
+      {
+        "id": "hard-09",
+        "expected": "strategy",
+        "routed": "strategy",
+        "intent_ok": true,
+        "error": null
+      }
+    ]
+  }
+}
