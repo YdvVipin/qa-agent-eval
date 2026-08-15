@@ -43,7 +43,7 @@ def main():
     elif kappa < 0.6:
         verdict = "MODERATE: judge is directionally useful but noisy at the item level."
     else:
-        verdict = "STRONG: judge agrees with human labels well enough to trust for this rubric."
+        verdict = "STRONG: judge agrees with the reference labels well enough to trust for this rubric."
     print(f"-> {verdict}")
 
     out = HERE / "results" / "judge_agreement_report.json"

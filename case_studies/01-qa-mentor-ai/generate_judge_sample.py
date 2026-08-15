@@ -2,8 +2,9 @@
 """Generates the 30-item judge-reliability sample: runs the live pipeline,
 scores each answer with the gpt-4o-mini judge (reused from myNanoGpt's
 run_evals.py — same rubric: correctness + completeness, 1-5), and writes a
-labeling sheet for a human to fill in independently. The judge score is
-recorded but NOT shown alongside the blank column, so the human label isn't
+labeling sheet for independent scoring (see the case study README for how
+this specific run's labels were produced). The judge score is recorded but
+NOT shown alongside the blank column, so the independent label isn't
 anchored by the judge's answer.
 
 Run with myNanoGpt's venv (needs requests, python-dotenv, openai):
