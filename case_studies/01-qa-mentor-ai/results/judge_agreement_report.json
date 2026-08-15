@@ -1,0 +1,6 @@
+{
+  "n": 30,
+  "raw_agreement": 0.8,
+  "cohens_kappa": 0.38356164383561653,
+  "verdict": "WEAK: judge scores should not be trusted as a standalone quality signal."
+}

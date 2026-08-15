@@ -1,0 +1,2098 @@
+id,question,answer,human_score_1_to_5
+reviewer-04,"Review this Cypress test:
+```javascript
+it('loads', () => {
+  cy.visit('/');
+  cy.wait(4000);
+  cy.get('button').click();
+});
+```","## Code Review
+
+### 🔴 Critical Issues
+1. **Hard-coded `cy.wait(number)` detected**: The line `cy.wait(4000);` introduces a static wait of 4 seconds, which can lead to flaky tests. Instead, use a dynamic wait that checks for an element's visibility or existence before proceeding. 
+   - **Fix**: Replace `cy.wait(4000);` with `cy.get('button').should('be.visible');`
+
+### 🟡 Warnings
+1. **Lack of assertions**: The test currently does not assert the expected outcome after clicking the button. This can lead to false positives if the button click does not result in the expected behavior.
+   - **Fix**: Add an assertion after the button click to verify that the expected result occurs. For example, if clicking the button should navigate to a new page or display a message, assert that the new state is correct.
+
+### 🔵 Suggestions
+1. **Test description**: The test description `'loads'` is vague. Consider providing a more descriptive name that reflects what the test is verifying, such as `'should display the button and navigate on click'`.
+2. **Use of `beforeEach` for setup**: If there are multiple tests that visit the same page, consider using `beforeEach` to avoid repetition and improve readability.
+3. **Error handling**: Consider adding error handling or logging to capture any issues that arise during the test execution, which can help in debugging.
+
+### ✅ What's Good
+- The test uses Cypress, which is a great choice for end-to-end testing due to its powerful features and ease of use.
+- The structure of the test is clear and straightforward, making it easy to understand the intended behavior.
+
+### Revised Code
+```javascript
+describe('Button Interaction', () => {
+  beforeEach(() => {
+    cy.visit('/');
+  });
+
+  it('should display the button and navigate on click', () => {
+    cy.get('button').should('be.visible').click();
+    // Add an assertion to verify the expected outcome after clicking the button
+    cy.url().should('include', '/expected-path'); // Adjust the expected path accordingly
+  });
+});
+```
+
+This revised code addresses the critical issue of using a hard-coded wait by implementing a dynamic wait, improves the test's clarity with a more descriptive name, and includes an assertion to ensure that the test validates the expected outcome.",5
+hard-01,Review my test strategy for the checkout feature and tell me if I'm missing edge cases.,"## Code Review
+
+### 🔴 Critical Issues
+1. **Lack of Edge Case Testing**: The provided code does not include tests for edge cases such as:
+   - Empty cart checkout
+   - Checkout with invalid payment details
+   - Checkout with expired promotional codes
+   - Large quantities of items (to test system limits)
+   
+   **Fix**: Add unit tests for these scenarios to ensure comprehensive coverage and avoid potential failures during real-world usage.
+
+2. **Hardcoded Values**: If there are any hardcoded values (e.g., product IDs, prices), this can lead to false positives if the underlying data changes.
+   
+   **Fix**: Use constants or configuration files to manage these values. For example, replace `const productId = ""123"";` with `const productId = getProductIdFromConfig();`.
+
+### 🟡 Warnings
+1. **Lack of Assertions**: If your tests do not have assertions to verify outcomes, they will not validate the expected behavior.
+   
+   **Fix**: Ensure that every test has at least one assertion. For example, after checking out, assert that the order confirmation page is displayed: `expect(orderConfirmationPage.isDisplayed()).toBe(true);`.
+
+2. **Inconsistent Naming Conventions**: If variable and function names are not consistent, it can lead to confusion.
+   
+   **Fix**: Adopt a consistent naming convention (e.g., camelCase for variables and functions) throughout the test code.
+
+3. **No Cleanup After Tests**: If the tests create data (like orders or users), they should clean up after themselves to avoid polluting the test environment.
+   
+   **Fix**: Implement teardown methods to remove any test data created during the tests.
+
+### 🔵 Suggestions
+1. **Use Page Object Model (POM)**: If not already implemented, consider using the Page Object Model to improve maintainability and readability of your tests.
+   
+   **Suggestion**: Create a `CheckoutPage` class that encapsulates all interactions with the checkout page.
+
+2. **Add Comments and Documentation**: While the code may be clear to you now, adding comments can help others (or yourself in the future) understand the intent behind complex logic.
+   
+   **Suggestion**: Document the purpose of each test case and any important setup or teardown steps.
+
+3. **Parameterize Tests**: If you have multiple similar tests (like checking out with different payment methods), consider using parameterized tests to reduce redundancy.
+   
+   **Suggestion**: Use a testing framework that supports parameterization to streamline your test cases.
+
+### ✅ What's Good
+- The overall structure of your test strategy is clear, and it seems to follow a logical flow.
+- You have included error handling, which is crucial for robust test execution.
+- The use of TypeScript enhances type safety, making your tests less prone to runtime errors.
+
+### Revised Code
+```typescript
+// Assuming a basic structure for checkout tests
+
+class CheckoutPage {
+    // Define locators and methods for interacting with the checkout page
+    get cartItems() { return $('#cart-items'); }
+    get checkoutButton() { return $('#checkout-button'); }
+    get paymentInput() { return $('#payment-input'); }
+    get confirmationMessage() { return $('#confirmation-message'); }
+
+    async checkout(paymentDetails) {
+        await this.checkoutButton.click();
+        await this.paymentInput.setValue(paymentDetails);
+        // Additional steps for checkout
+    }
+
+    async isConfirmationDisplayed() {
+        return await this.confirmationMessage.isDisplayed();
+    }
+}
+
+// Test cases
+describe('Checkout Feature', () => {
+    const checkoutPage = new CheckoutPage();
+
+    beforeEach(async () => {
+        // Setup code, e.g., adding items to cart
+    });
+
+    afterEach(async () => {
+        // Cleanup code, e.g., removing test data
+    });
+
+    it('should allow checkout with valid payment details', async () => {
+        await checkoutPage.checkout('valid-payment-details');
+        expect(await checkoutPage.isConfirmationDisplayed()).toBe(true);
+    });
+
+    it('should not allow checkout with invalid payment details', async () => {
+        await checkoutPage.checkout('invalid-payment-details');
+        // Assert that an error message is displayed
+    });
+
+    // Additional tests for edge cases
+});
+```
+
+This revised code implements the Page Object Model, adds cleanup after tests, and includes assertions to verify outcomes. It also sets the stage",5
+testgen-01,Write a Playwright test for a login page using the Page Object Model.,"Here's a complete Playwright test for a login page using the Page Object Model (POM) pattern, following the conventions you've provided.
+
+### Page Object Model Implementation
+
+First, create a `LoginPage.ts` file that encapsulates the login functionality.
+
+```typescript
+// pages/LoginPage.ts
+import { Page, expect } from '@playwright/test';
+
+export class LoginPage {
+  private emailInput = this.page.getByPlaceholder('Email Address');
+  private passwordInput = this.page.getByPlaceholder('Password');
+  private signInButton = this.page.getByRole('button', { name: 'Sign In' });
+
+  constructor(private page: Page) {}
+
+  async navigate() {
+    await this.page.goto('/login');
+    await this.page.waitForLoadState('networkidle');
+  }
+
+  async enterEmail(email: string) {
+    await expect(this.emailInput).toBeVisible();
+    await this.emailInput.fill(email);
+  }
+
+  async enterPassword(password: string) {
+    await expect(this.passwordInput).toBeVisible();
+    await this.passwordInput.fill(password);
+  }
+
+  async submit() {
+    await expect(this.signInButton).toBeEnabled();
+    await this.signInButton.click();
+  }
+}
+```
+
+### Test Implementation
+
+Next, create a test file `login.spec.ts` that uses the `LoginPage` class.
+
+```typescript
+// tests/login.spec.ts
+import { test, expect } from '@playwright/test';
+import { LoginPage } from '../pages/LoginPage';
+
+test.describe('Login Page Tests', () => {
+  let loginPage: LoginPage;
+
+  test.beforeEach(async ({ page }) => {
+    loginPage = new LoginPage(page);
+    await loginPage.navigate();
+  });
+
+  test('user can log in with valid credentials', async ({ page }) => {
+    const username = 'user@example.com';
+    const password = 'password123';
+
+    await loginPage.enterEmail(username);
+    await loginPage.enterPassword(password);
+    await loginPage.submit();
+
+    // Assert that the user is redirected to the dashboard or home page
+    await expect(page).toHaveURL(/dashboard/); // Adjust the URL as needed
+    await expect(page.getByText('Welcome')).toBeVisible(); // Adjust the text as needed
+  });
+
+  test('user cannot log in with invalid credentials', async ({ page }) => {
+    const username = 'invalid@example.com';
+    const password = 'wrongpassword';
+
+    await loginPage.enterEmail(username);
+    await loginPage.enterPassword(password);
+    await loginPage.submit();
+
+    // Assert that an error message is displayed
+    await expect(page.getByTestId('error-message')).toBeVisible(); // Adjust the test ID as needed
+    await expect(page.getByTestId('error-message')).toContainText('Invalid credentials'); // Adjust the text as needed
+  });
+});
+```
+
+### Explanation
+
+1. **Page Object Model (POM)**: The `LoginPage` class encapsulates all interactions with the login page, including navigating to the page, entering email and password, and submitting the form.
+
+2. **Test Structure**: The tests are organized within a `describe` block. Each test uses the `beforeEach` hook to instantiate the `LoginPage` and navigate to the login page before each test runs.
+
+3. **Assertions**: Each interaction is followed by assertions to ensure the expected outcomes, such as visibility of elements and URL checks.
+
+4. **Locator Strategy**: The code uses `getByPlaceholder` and `getByRole` for locating elements, adhering to the locator strategy you've specified.
+
+This code is ready to run in a Playwright testing environment. Make sure to adjust URLs, text, and test IDs as necessary to fit your application's specifics.",5
+strategy-04,Where should I start when testing a file upload feature?,"## Test Strategy: File Upload Feature
+
+### 1. Unit Tests
+Unit tests should focus on the file input handling logic, including validation of file types, size limits, and ensuring the upload function is called correctly. You should also test edge cases such as empty file inputs, large files, and unsupported file types.
+
+Example test skeleton:
+```javascript
+test(""should validate file type and size"", () => {
+    const file = new File([""content""], ""videoFile.mxf"", { type: ""video/mxf"" });
+    expect(isValidFile(file)).toBe(true); // Assuming isValidFile checks type and size
+});
+
+test(""should reject unsupported file type"", () => {
+    const file = new File([""content""], ""document.pdf"", { type: ""application/pdf"" });
+    expect(isValidFile(file)).toBe(false);
+});
+```
+
+### 2. API Tests
+For the file upload API endpoint (e.g., `POST /upload`), you should test various scenarios including successful uploads, invalid file types, and file size limits. Ensure that the correct status codes are returned and that the response contains the expected data.
+
+Example with pytest+requests:
+```python
+def test_successful_file_upload():
+    files = {'file': open('path/to/videoFile.mxf', 'rb')}
+    response = requests.post(URL, files=files)
+    assert response.status_code == 200
+    assert 'file_url' in response.json()
+
+def test_file_upload_invalid_type():
+    files = {'file': open('path/to/document.pdf', 'rb')}
+    response = requests.post(URL, files=files)
+    assert response.status_code == 400  # Assuming 400 for invalid type
+```
+
+### 3. E2E Tests (Critical Path)
+Automate the user flow where a user selects a file, uploads it, and receives confirmation. Use Playwright for this, as it provides a robust way to handle file uploads in a browser context.
+
+Starter code:
+```typescript
+import { test, expect } from '@playwright/test';
+
+test('file upload test', async ({ page }) => {
+    await page.goto('/upload');
+    const fileInput = await page.locator('input[type=""file""]');
+    await fileInput.setInputFiles('path/to/videoFile.mxf');
+    await page.click('button[type=""submit""]');
+    await expect(page.locator('.success-message')).toHaveText('Upload successful!');
+});
+```
+
+### 4. Performance Considerations
+Consider load testing the file upload endpoint to ensure it can handle multiple concurrent uploads. Set load targets based on expected user traffic. Use k6 for performance testing.
+
+Example k6 snippet:
+```javascript
+import http from 'k6/http';
+import { check, sleep } from 'k6';
+
+export default function () {
+    let file = open('path/to/videoFile.mxf', 'b');
+    let res = http.post('http://your-api/upload', { file: file });
+    check(res, { 'is status 200': (r) => r.status === 200 });
+    sleep(1);
+}
+```
+
+### 5. Where to Start
+Begin by automating the unit tests for file validation logic. This will help catch issues early in the development process and ensure that only valid files are processed. 
+
+Example code snippet:
+```javascript
+test(""should reject empty file input"", () => {
+    const file = null; // Simulating no file selected
+    expect(isValidFile(file)).toBe(false);
+});
+```
+
+### Security and Accessibility Concerns
+Ensure that the file upload feature includes checks for file size limits and type validation to prevent malicious uploads. Additionally, consider implementing security measures such as scanning uploaded files for malware. Accessibility should also be considered, ensuring that file input fields are properly labeled and usable with assistive technologies. 
+
+### CI/CD Integration
+Integrate your tests into a CI/CD pipeline using GitHub Actions to ensure that every pull request triggers the test suite, catching issues before they reach production.",5
+hard-09,How do I test asynchronous code properly?,"## Test Strategy: Testing Asynchronous Code
+
+### 1. Unit Tests
+For unit testing asynchronous code, focus on functions that return promises or use async/await. Test the resolution and rejection of promises, including boundary values (e.g., resolving with an empty array) and negative scenarios (e.g., throwing errors). Use mocking to isolate the async behavior.
+
+Example test skeleton using Jest:
+```javascript
+test('resolves with value when successful', async () => {
+    const result = await asyncFunction();
+    expect(result).toBe('expected value');
+});
+
+test('rejects with error when failed', async () => {
+    await expect(asyncFunctionThatFails()).rejects.toThrow('error message');
+});
+```
+
+### 2. API Tests
+For API tests, focus on endpoints that involve asynchronous operations. Test the expected responses for various scenarios: success (200), client errors (400), and server errors (500). Ensure that the API handles async requests properly, including timeout scenarios.
+
+Example using pytest + requests:
+```python
+def test_async_api_success():
+    r = requests.get('https://api.example.com/async-endpoint')
+    assert r.status_code == 200
+    assert r.json() == {'data': 'expected data'}
+
+def test_async_api_timeout():
+    r = requests.get('https://api.example.com/async-endpoint', timeout=1)
+    assert r.status_code == 408  # Request Timeout
+```
+
+### 3. E2E Tests (Critical Path)
+Automate user flows that involve asynchronous operations, such as form submissions that trigger background processing. Use Playwright to test that the UI reflects the async state correctly (loading indicators, success messages).
+
+Example starter code using Playwright:
+```typescript
+import { test, expect } from '@playwright/test';
+
+test('submitting a form triggers async processing', async ({ page }) => {
+    await page.goto('https://example.com/form');
+    await page.fill('input[name=""data""]', 'test data');
+    await page.click('button[type=""submit""]');
+    
+    // Wait for async operation to complete
+    await page.waitForSelector('.success-message');
+    expect(await page.textContent('.success-message')).toBe('Operation successful!');
+});
+```
+
+### 4. Performance Considerations
+When testing asynchronous code, consider the performance of your async operations. Load test your APIs to ensure they can handle concurrent requests. Use k6 to simulate multiple users.
+
+Example k6 snippet:
+```javascript
+import http from 'k6/http';
+import { sleep } from 'k6';
+
+export default function () {
+    http.get('https://api.example.com/async-endpoint');
+    sleep(1);
+}
+```
+
+### 5. Where to Start
+Begin with unit tests for the core async functions. This will provide the most immediate feedback and catch issues early in the development process. Focus on both successful and failure scenarios.
+
+Example unit test snippet:
+```javascript
+test('async function handles error correctly', async () => {
+    await expect(asyncFunctionThatThrows()).rejects.toThrow('expected error');
+});
+```
+
+### Additional Considerations
+- **CI/CD Integration**: Ensure that all tests are integrated into your CI/CD pipeline (e.g., using GitHub Actions) to run automatically on every push or pull request.
+- **Security and Accessibility**: If the async operations involve user data, ensure that proper validation and sanitization are in place to prevent security vulnerabilities like SQL injection. Also, ensure that the UI is accessible during loading states (e.g., using ARIA roles).
+
+By following this structured approach, you can effectively test asynchronous code and ensure that it behaves as expected under various conditions.",4
+testgen-06,Generate a pytest Playwright test for a dropdown selection.,"Here's a complete pytest Playwright test for selecting a dropdown option, following the conventions you've provided:
+
+```python
+import pytest
+from playwright.sync_api import Page, expect
+
+class DropdownPage:
+    def __init__(self, page: Page):
+        self.page = page
+        self.dropdown_locator = page.get_by_test_id(""dropdown"")  # Assuming the dropdown has a data-testid=""dropdown""
+
+    async def navigate(self):
+        await self.page.goto(""https://the-internet.herokuapp.com/dropdown"")
+        await self.page.wait_for_load_state(""networkidle"")
+
+    async def select_random_option(self):
+        # Locate the dropdown element
+        dropdown = self.page.locator(self.dropdown_locator)
+        # Count the number of options
+        number_of_options = await dropdown.locator('option').count()
+        # Generate a random index
+        random_index = random.randint(1, number_of_options - 1)  # Exclude the first option if needed
+        # Select the option
+        await dropdown.select_option({ 'index': random_index })
+        # Validate the selected value
+        selected_value = await dropdown.evaluate(""element => element.value"")
+        expect(selected_value).to_contain(str(random_index))  # Adjust based on your dropdown values
+
+@pytest.mark.parametrize(""dropdown_page"", [DropdownPage], indirect=True)
+def test_select_random_option(dropdown_page: DropdownPage):
+    await dropdown_page.navigate()
+    await dropdown_page.select_random_option()
+```
+
+### Explanation:
+1. **DropdownPage Class**: This class encapsulates the functionality related to the dropdown, including navigation and selecting a random option.
+2. **navigate Method**: This method navigates to the dropdown page and waits for the page to load completely.
+3. **select_random_option Method**: This method counts the options in the dropdown, selects a random option (excluding the first if necessary), and validates that the selected value matches the expected value.
+4. **Test Function**: The `test_select_random_option` function initializes the `DropdownPage`, navigates to the page, and performs the dropdown selection.
+
+### Note:
+- Ensure that the dropdown element has the appropriate `data-testid` attribute for the locator to work correctly.
+- Adjust the expected value assertion based on the actual values present in your dropdown options.",2
+hard-07,Can you write me a Python script to scrape stock prices?,"When it comes to scraping stock prices while ensuring you have a different IP address for each request, there are a few approaches you can take. Using proxies or a Tor browser are two common methods. Let's explore both options, focusing on the use of proxies since they can be simpler to set up for scraping tasks.
+
+### Why Use Proxies or Tor?
+1. **Avoid IP Bans**: Websites often have measures to block repeated requests from the same IP address. Using different IP addresses helps you avoid getting blocked.
+2. **Data Collection**: If you're collecting data frequently, rotating IPs allows you to gather more data without hitting rate limits imposed by the website.
+
+### Using Proxies
+You can gather free proxies from various online sources, but keep in mind that free proxies can be unreliable. A better option might be to use a paid proxy service that provides a stable and fast connection.
+
+Here's a simple Python script that uses the `requests` library along with a proxy to scrape stock prices. This example assumes you have a list of proxies to use.
+
+```python
+import requests
+from bs4 import BeautifulSoup
+import random
+import time
+
+# List of proxies (example format)
+proxies = [
+    ""http://username:password@proxy1.com:port"",
+    ""http://username:password@proxy2.com:port"",
+    # Add more proxies as needed
+]
+
+def scrape_stock_price(url):
+    proxy = random.choice(proxies)  # Randomly select a proxy
+    try:
+        response = requests.get(url, proxies={""http"": proxy, ""https"": proxy}, timeout=5)
+        response.raise_for_status()  # Raise an error for bad responses
+        soup = BeautifulSoup(response.text, 'html.parser')
+        
+        # Example selector for stock price, adjust according to the website's structure
+        stock_price = soup.select_one('.stock-price-selector').text
+        return stock_price
+    except Exception as e:
+        print(f""Error: {e}"")
+        return None
+
+url = 'http://example.com/stock-page'  # Replace with the actual stock page URL
+while True:
+    price = scrape_stock_price(url)
+    if price:
+        print(f""Current Stock Price: {price}"")
+    time.sleep(30)  # Wait for 30 seconds before the next request
+```
+
+### Using Tor
+If you prefer using Tor, you'll need to set it up on your AWS EC2 instance. Here’s a brief overview of what you need to do:
+
+1. **Install Tor**: You can install Tor on Ubuntu using the following command:
+   ```bash
+   sudo apt-get install tor
+   ```
+
+2. **Configure Tor**: You might need to edit the Tor configuration file (`/etc/tor/torrc`) to ensure it allows connections from your script.
+
+3. **Use Selenium with Tor**: Here’s a simple example of how to set up Selenium with the Tor browser:
+
+```python
+from selenium import webdriver
+from selenium.webdriver.firefox.options import Options
+
+def create_tor_driver():
+    options = Options()
+    options.binary_location = '/path/to/tor-browser/Browser/firefox'  # Adjust the path
+    driver = webdriver.Firefox(options=options)
+    return driver
+
+url = 'http://example.com/stock-page'  # Replace with the actual stock page URL
+driver = create_tor_driver()
+driver.get(url)
+
+# Example selector for stock price, adjust according to the website's structure
+stock_price = driver.find_element_by_css_selector('.stock-price-selector').text
+print(f""Current Stock Price: {stock_price}"")
+
+driver.quit()
+```
+
+### Conclusion
+Both methods have their pros and cons. Using proxies can be simpler and faster, while Tor provides a higher level of anonymity. Choose the method that best fits your needs.
+
+**What to explore next:**
+- The implications of web scraping on website terms of service.
+- Best practices for managing and rotating proxies effectively.",2
+reviewer-06,"Find the issues in this test:
+```javascript
+test('nav', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('//div[2]/a').click();
+});
+```","## Code Review
+
+### 🔴 Critical Issues
+1. **Brittle XPath Selector**: The line `await page.locator('//div[2]/a').click();` uses a positional XPath selector which is prone to breaking if the DOM structure changes. This can lead to flaky tests that fail unexpectedly.
+   - **Fix**: Replace the XPath with a more stable selector, such as a `data-testid` or an `aria-role`. For example, if the anchor tag has a `data-testid` attribute, it can be rewritten as:
+     ```javascript
+     await page.locator('[data-testid=""nav-link""]').click();
+     ```
+
+### 🟡 Warnings
+1. **Lack of Error Handling**: The test does not include any error handling or assertions to validate that the navigation was successful after the click. This could lead to false positives if the click does not result in the expected outcome.
+   - **Fix**: Add an assertion to confirm that the navigation was successful. For example:
+     ```javascript
+     await expect(page).toHaveURL('/expected-url-after-click');
+     ```
+
+### 🔵 Suggestions
+1. **Test Naming**: The test name `'nav'` is not descriptive enough. Consider using a more descriptive name that indicates what the test is validating.
+   - **Suggestion**: Rename the test to something like `'should navigate to the correct page when the navigation link is clicked'`.
+
+2. **Use of Async/Await**: While the use of `async` and `await` is correct, ensure that all asynchronous actions are properly awaited to prevent race conditions.
+   - **Suggestion**: Ensure that any additional actions that follow the click are also awaited.
+
+3. **Commenting**: Adding comments to explain the purpose of the test can improve readability and maintainability, especially for someone new to the codebase.
+   - **Suggestion**: Add a comment above the test explaining what it is intended to verify.
+
+### ✅ What's Good
+- The test is structured correctly with the use of `async/await`, which is a good practice for handling asynchronous operations in JavaScript.
+- The use of the Playwright testing framework is a solid choice for modern web automation.
+
+### Revised Code
+```javascript
+// Test to verify navigation to the correct page when the navigation link is clicked
+test('should navigate to the correct page when the navigation link is clicked', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('[data-testid=""nav-link""]').click(); // Using a stable selector
+  await expect(page).toHaveURL('/expected-url-after-click'); // Verifying the navigation was successful
+});
+``` 
+
+By addressing the critical issues and warnings, the revised code will be more robust, maintainable, and less prone to flakiness.",5
+strategy-05,What kinds of tests should I write for a search bar with autocomplete?,"## Test Strategy: Search Bar with Autocomplete
+
+### 1. Unit Tests
+Unit tests should focus on the core logic of the autocomplete functionality, such as the filtering of search results based on user input. This includes testing the search algorithm, handling of special characters, and edge cases like empty inputs or very long search terms.
+
+Example tests to consider:
+- Valid search terms (normal cases)
+- Empty input (negative case)
+- Special characters (e.g., punctuation)
+- Boundary values (max input length)
+
+```javascript
+// Example using Jest
+test('returns filtered results for valid input', () => {
+    const results = autocomplete('apple');
+    expect(results).toEqual(['apple', 'apple pie', 'apple juice']);
+});
+
+test('returns empty array for empty input', () => {
+    const results = autocomplete('');
+    expect(results).toEqual([]);
+});
+```
+
+### 2. API Tests
+If the autocomplete feature fetches suggestions from an API, it's crucial to test the relevant endpoints. For example, you might have a `GET /autocomplete` endpoint. Key assertions should include:
+- Valid input returns 200 with a correct response format
+- Invalid input returns 400 (e.g., special characters that are not allowed)
+- Response time should be within acceptable limits
+
+Example using pytest and requests:
+```python
+def test_autocomplete_valid_input():
+    response = requests.get('/autocomplete', params={'query': 'apple'})
+    assert response.status_code == 200
+    assert 'suggestions' in response.json()
+
+def test_autocomplete_invalid_input():
+    response = requests.get('/autocomplete', params={'query': '!!!'})
+    assert response.status_code == 400
+```
+
+### 3. E2E Tests (Critical Path)
+Automate the user flow where a user types into the search bar and sees autocomplete suggestions. Ensure that the suggestions appear correctly and that the user can select one. Also, test that pressing the ESC key closes the suggestions.
+
+Recommended tool: Playwright (TypeScript)
+```typescript
+import { test, expect } from '@playwright/test';
+
+test('autocomplete suggestions appear and can be closed', async ({ page }) => {
+    await page.goto('http://yourapp.com');
+    await page.fill('#InputWithAutocomplete', 'apple');
+    await page.waitForSelector('.suggestion'); // Wait for suggestions to appear
+    await page.press('#InputWithAutocomplete', 'Escape'); // Close suggestions
+    const suggestionsVisible = await page.isVisible('.suggestion');
+    expect(suggestionsVisible).toBe(false);
+});
+```
+
+### 4. Performance Considerations
+Load test the autocomplete feature to ensure it can handle multiple simultaneous requests, especially during peak times. Set load targets based on expected user behavior (e.g., 1000 concurrent users typing queries).
+
+Example k6 snippet:
+```javascript
+import http from 'k6/http';
+import { sleep } from 'k6';
+
+export default function () {
+    http.get('http://yourapp.com/autocomplete?query=apple');
+    sleep(1);
+}
+```
+
+### 5. Where to Start
+Begin with unit tests for the autocomplete logic. This will provide the highest return on investment by catching logical errors early in the development process. 
+
+Example starter code:
+```javascript
+test('handles special characters correctly', () => {
+    const results = autocomplete('appl@');
+    expect(results).toEqual([]); // Assuming special characters yield no results
+});
+```
+
+### Security and Accessibility Considerations
+- **Security**: Ensure that the autocomplete does not expose sensitive data. Validate and sanitize inputs to prevent injection attacks.
+- **Accessibility**: Ensure that the autocomplete suggestions are keyboard navigable and screen-reader friendly. Test for ARIA attributes and focus management.",4
+hard-02,What tests should I write for a password reset flow?,"## Test Strategy: Password Reset Flow
+
+### 1. Unit Tests
+Unit tests should focus on validating the logic behind password reset functionalities, such as the email validator and password strength checker. You should also test boundary values (e.g., minimum and maximum password lengths) and negative inputs (e.g., empty fields, invalid email formats).
+
+```python
+def test_password_strength_valid():
+    assert is_password_strong(""ValidPassword123!"") is True
+
+def test_password_strength_too_short():
+    assert is_password_strong(""short"") is False
+
+def test_rejects_malformed_email():
+    assert is_valid_email(""no-at-symbol"") is False
+```
+
+### 2. API Tests
+For the password reset flow, you will need to test the relevant API endpoints, typically `POST /password/reset` and `GET /password/reset/:token`. Key assertions should include status codes for valid and invalid requests, as well as response schemas.
+
+- **POST /password/reset**: Assert status codes for 200 (success), 400 (invalid email), and 404 (user not found).
+- **GET /password/reset/:token**: Assert status codes for 200 (valid token) and 403 (invalid token).
+
+```python
+def test_password_reset_request():
+    r = requests.post(URL + ""/password/reset"", json={""email"": ""user@example.com""})
+    assert r.status_code == 200
+
+def test_password_reset_invalid_email():
+    r = requests.post(URL + ""/password/reset"", json={""email"": ""invalid-email""})
+    assert r.status_code == 400
+```
+
+### 3. E2E Tests (Critical Path)
+Using Playwright, automate the password reset flow where a user requests a password reset email, receives the email, and successfully resets their password. Include negative scenarios where the user tries to reset with an invalid token or submits an empty password.
+
+```typescript
+import { test, expect } from '@playwright/test';
+
+test('User can reset their password', async ({ page }) => {
+    await page.goto('/login');
+    await page.click('text=Forgot Password');
+    await page.fill('input[data-qa=""login-password""]', 'user@example.com');
+    await page.click('button[type=""submit""]');
+    await expect(page).toHaveURL('/password/reset/sent');
+
+    // Simulate user clicking the link in the email (you may need to mock this)
+    await page.goto('/password/reset/token');
+    await page.fill('input[name=""newPassword""]', 'NewValidPassword123!');
+    await page.click('button[type=""submit""]');
+    await expect(page).toHaveURL('/login');
+});
+```
+
+### 4. Performance Considerations
+Consider load testing the password reset endpoint to ensure it can handle spikes in requests, especially during high-traffic times (e.g., after a security breach). Use k6 to simulate multiple users requesting password resets simultaneously.
+
+```javascript
+import http from 'k6/http';
+import { check, sleep } from 'k6';
+
+export let options = {
+    vus: 100, // 100 virtual users
+    duration: '30s',
+};
+
+export default function () {
+    let res = http.post('https://yourapi.com/password/reset', { email: 'user@example.com' });
+    check(res, { 'status was 200': (r) => r.status === 200 });
+    sleep(1);
+}
+```
+
+### 5. Where to Start
+Begin with unit tests for the password strength validation and email format validation. These tests are foundational and will catch many issues early in the development cycle.
+
+```python
+def test_password_strength_valid():
+    assert is_password_strong(""ValidPassword123!"") is True
+```
+
+### Security and Accessibility Concerns
+- **Security**: Ensure that the password reset token is securely generated and has an expiration time. Test for brute force attacks on the password reset endpoint.
+- **Accessibility**: Ensure that all form fields have associated labels and are accessible via keyboard navigation. Use tools like Axe or Lighthouse to check for accessibility issues.
+
+### CI/CD Integration
+Integrate the tests into your CI/CD pipeline using GitHub Actions. This ensures that every commit triggers the test suite, helping catch issues early before they reach production.",5
+strategy-06,How should I plan testing for a multi-step registration form?,"## Test Strategy: Multi-Step Registration Form
+
+### 1. Unit Tests
+Focus on validating the individual functions that handle form state and validation. Test for required fields, boundary values (e.g., maximum character limits), and negative inputs (e.g., invalid email formats, empty fields).
+```python
+def test_email_validation():
+    assert is_valid_email(""test@example.com"") is True
+    assert is_valid_email(""invalid-email"") is False
+    assert is_valid_email("""") is False  # Negative case: empty input
+```
+
+### 2. API Tests
+Test the API endpoint that handles registration submissions. Validate status codes and response schemas for various scenarios: 201 (successful registration), 400 (validation errors), and 409 (duplicate user). Ensure all required fields are validated.
+```python
+def test_registration_success():
+    response = requests.post('/api/register', json={""email"": ""test@example.com"", ""password"": ""securepassword""})
+    assert response.status_code == 201
+
+def test_registration_duplicate_user():
+    requests.post('/api/register', json={""email"": ""test@example.com"", ""password"": ""securepassword""})
+    response = requests.post('/api/register', json={""email"": ""test@example.com"", ""password"": ""anotherpassword""})
+    assert response.status_code == 409  # Negative case: duplicate user
+```
+
+### 3. E2E Tests (Critical Path)
+Utilize Playwright to automate the multi-step registration process. Ensure that data persists across steps and that navigation behaves correctly (Next only enabled when valid, Back returns to the previous step).
+```typescript
+import { test, expect } from '@playwright/test';
+
+test('multi-step registration form data persistence', async ({ page }) => {
+  await page.goto('/register');
+
+  // Step 1 — fill in email and password
+  await page.fill('input[name=""email""]', 'test@example.com');
+  await page.fill('input[name=""password""]', 'securepassword');
+  await page.click('button:has-text(""Next"")');
+
+  // Step 2 — verify data persistence
+  await expect(page.locator('input[name=""email""]')).toHaveValue('test@example.com');
+  await expect(page.locator('input[name=""password""]')).toHaveValue('securepassword');
+
+  // Navigate back
+  await page.click('button:has-text(""Back"")');
+  await expect(page.locator('input[name=""email""]')).toHaveValue('test@example.com');
+});
+```
+
+### 4. Performance Considerations
+Load test the registration endpoint to ensure it can handle spikes in user registrations, especially during peak times (e.g., promotional events). Use k6 to simulate multiple users.
+```javascript
+import http from 'k6/http';
+import { check, sleep } from 'k6';
+
+export default function () {
+  const url = 'https://yourapi.com/api/register';
+  const payload = JSON.stringify({ email: 'test@example.com', password: 'securepassword' });
+  const params = { headers: { 'Content-Type': 'application/json' } };
+
+  let res = http.post(url, payload, params);
+  check(res, { 'is status 201': (r) => r.status === 201 });
+  sleep(1);
+}
+```
+
+### 5. Where to Start
+Begin by automating the data persistence test across steps. This is critical as it addresses a high-severity issue that can lead to user frustration if data is lost during navigation. Here's a starter code snippet:
+```typescript
+import { test, expect } from '@playwright/test';
+
+test('registration wizard persists data across steps', async ({ page }) => {
+  await page.goto('/register');
+
+  // Step 1 — fill in required fields
+  await page.fill('input[name=""email""]', 'test@example.com');
+  await page.fill('input[name=""password""]', 'securepassword');
+  await page.click('button:has-text(""Next"")');
+
+  // Step 2 — verify data persistence
+  await expect(page.locator('input[name=""email""]')).toHaveValue('test@example.com');
+});
+```
+
+### Security and Accessibility Considerations
+- Ensure that sensitive data (like passwords) is handled securely and that appropriate encryption is in place during transmission.
+- Validate that the form is accessible, including proper labeling of fields and error messages for screen readers.
+- Test for SQL",5
+reviewer-07,"Review my test for best practices:
+```python
+def test_form():
+    driver.find_element(By.ID, 'name').send_keys('x')
+    driver.find_element(By.XPATH, '//button[1]').click()
+    assert True
+```","## Code Review
+
+### 🔴 Critical Issues
+1. **Weak Assertion**: The line `assert True` does not validate any actual outcome of the test. This will always pass, leading to false positives. 
+   - **Fix**: Replace `assert True` with a meaningful assertion that checks the expected outcome of the form submission, such as checking for a success message or the presence of a new element.
+   ```python
+   assert driver.find_element(By.ID, 'success-message').is_displayed()
+   ```
+
+### 🟡 Warnings
+1. **Brittle Positional XPath**: The XPath `//button[1]` is prone to failure if the DOM structure changes, which can lead to flaky tests.
+   - **Fix**: Use a more reliable selector such as a data attribute or an aria role. For example, if the button has a `data-testid` attribute:
+   ```python
+   driver.find_element(By.CSS_SELECTOR, '[data-testid=""submit-button""]').click()
+   ```
+
+### 🔵 Suggestions
+1. **Use of Page Object Model (POM)**: The current test directly interacts with the web elements. Implementing the Page Object Model can improve maintainability and readability.
+   - **Suggestion**: Create a `FormPage` class to encapsulate the form interactions. Here’s a basic structure:
+   ```python
+   class FormPage:
+       def __init__(self, driver):
+           self.driver = driver
+           self.name_input = (By.ID, 'name')
+           self.submit_button = (By.CSS_SELECTOR, '[data-testid=""submit-button""]')
+           self.success_message = (By.ID, 'success-message')
+
+       def fill_name(self, name):
+           self.driver.find_element(*self.name_input).send_keys(name)
+
+       def submit(self):
+           self.driver.find_element(*self.submit_button).click()
+
+       def is_success_message_displayed(self):
+           return self.driver.find_element(*self.success_message).is_displayed()
+   ```
+
+2. **Test Name Clarity**: The test function name `test_form` is generic. Consider renaming it to reflect what the test actually verifies.
+   - **Suggestion**: Rename to `test_form_submission_displays_success_message`.
+
+### ✅ What's Good
+- The test is straightforward and demonstrates the basic interaction with a form, which is a good starting point for automation.
+- The use of `By` locators is a good practice as it improves readability and maintainability.
+
+### Revised Code
+```python
+from selenium.webdriver.common.by import By
+
+class FormPage:
+    def __init__(self, driver):
+        self.driver = driver
+        self.name_input = (By.ID, 'name')
+        self.submit_button = (By.CSS_SELECTOR, '[data-testid=""submit-button""]')
+        self.success_message = (By.ID, 'success-message')
+
+    def fill_name(self, name):
+        self.driver.find_element(*self.name_input).send_keys(name)
+
+    def submit(self):
+        self.driver.find_element(*self.submit_button).click()
+
+    def is_success_message_displayed(self):
+        return self.driver.find_element(*self.success_message).is_displayed()
+
+def test_form_submission_displays_success_message(driver):
+    form_page = FormPage(driver)
+    form_page.fill_name('x')
+    form_page.submit()
+    assert form_page.is_success_message_displayed()
+``` 
+
+This revised code enhances reliability, maintainability, and clarity, ensuring that the test accurately reflects the expected behavior of the application.",5
+strategy-03,How do I approach testing a REST API for a new endpoint?,"## Test Strategy: New REST API Endpoint
+
+### 1. Unit Tests
+Unit tests are essential for validating the core functionality of your endpoint's business logic. Focus on testing individual functions or methods that process requests, validate inputs, and interact with the database. Key areas to cover include:
+
+- Input validation functions (e.g., checking required fields, data types).
+- Business logic that handles the request and prepares the response.
+
+Example test skeleton for a hypothetical `createUser` function:
+```python
+def test_create_user_valid_input():
+    user_data = {""username"": ""testuser"", ""email"": ""test@example.com""}
+    assert create_user(user_data) == {""status"": ""success"", ""user_id"": 1}
+
+def test_create_user_missing_username():
+    user_data = {""email"": ""test@example.com""}
+    with pytest.raises(ValueError):
+        create_user(user_data)
+```
+
+### 2. API Tests
+For the new endpoint, you should test various scenarios to ensure it behaves as expected. This includes happy paths, edge cases, and negative scenarios. 
+
+Endpoints to test:
+- `POST /users` (for creating a user)
+
+Key assertions:
+- 200/201 for valid input.
+- 400 for missing required fields.
+- 422 for invalid data types.
+- 401 for unauthorized access.
+- 403 for forbidden access.
+- 404 for non-existent resources.
+- Response schema validation.
+
+Example using `pytest` and `requests`:
+```python
+def test_create_user_success():
+    response = requests.post(""http://api.example.com/users"", json={""username"": ""testuser"", ""email"": ""test@example.com""})
+    assert response.status_code == 201
+    assert ""user_id"" in response.json()
+
+def test_create_user_missing_fields():
+    response = requests.post(""http://api.example.com/users"", json={""email"": ""test@example.com""})
+    assert response.status_code == 400
+```
+
+### 3. E2E Tests (Critical Path)
+Automate the critical user flows that involve the new endpoint. This ensures that the entire system works together as expected. Use Playwright for E2E testing, focusing on scenarios where users interact with the API through the UI.
+
+User flows to automate:
+1. User registration via the UI.
+2. Successful creation of a user.
+3. Handling of validation errors.
+
+Starter code for Playwright (TypeScript):
+```typescript
+import { test, expect } from '@playwright/test';
+
+test('User registration - happy path', async ({ page }) => {
+    await page.goto('http://example.com/register');
+    await page.fill('input[name=""username""]', 'testuser');
+    await page.fill('input[name=""email""]', 'test@example.com');
+    await page.click('button[type=""submit""]');
+    await expect(page).toHaveURL(/success/);
+});
+
+test('User registration - missing username', async ({ page }) => {
+    await page.goto('http://example.com/register');
+    await page.fill('input[name=""email""]', 'test@example.com');
+    await page.click('button[type=""submit""]');
+    await expect(page.locator('.error')).toHaveText('Username is required');
+});
+```
+
+### 4. Performance Considerations
+Load testing is crucial to ensure the new endpoint can handle expected traffic. Use tools like k6 to simulate multiple users and measure response times.
+
+Load targets:
+- 100 concurrent users.
+- Response time under 200ms for 95% of requests.
+
+Example k6 script:
+```javascript
+import http from 'k6/http';
+import { check, sleep } from 'k6';
+
+export default function () {
+    let res = http.post('http://api.example.com/users', JSON.stringify({ username: 'testuser', email: 'test@example.com' }), {
+        headers: { 'Content-Type': 'application/json' },
+    });
+    check(res, {
+        'is status 201': (r) => r.status === 201,
+    });
+    sleep(1);
+}
+```
+
+### 5. Where to Start
+Begin with the unit tests for input validation and business logic. These tests are the most impactful as they catch issues early in the development process and do not depend on external resources.
+
+Example unit test to start with:
+```python
+def test_create_user_invalid_email():
+    user_data = {""username"": ""testuser"", ""email",3
+testgen-02,Generate a pytest test that verifies a GET /users API returns 200 and a JSON list.,"Here is a complete and runnable pytest test that verifies a GET `/users` API returns a status code of 200 and checks that the JSON response is a list. This test will also validate that the response contains the expected structure.
+
+```python
+import pytest
+import requests
+
+BASE_URL = ""https://jsonplaceholder.typicode.com""
+
+def test_get_users():
+    response = requests.get(f""{BASE_URL}/users"")
+    
+    # Assert that the response status code is 200
+    assert response.status_code == 200
+    
+    # Parse the JSON response
+    data = response.json()
+    
+    # Assert that the response is a list
+    assert isinstance(data, list)
+    
+    # Optionally, assert that the list is not empty
+    assert len(data) > 0
+    
+    # Assert that each user in the list has expected properties
+    for user in data:
+        assert ""id"" in user
+        assert ""name"" in user
+        assert ""username"" in user
+        assert ""email"" in user
+```
+
+### Explanation:
+1. **Imports**: The necessary libraries `pytest` and `requests` are imported.
+2. **BASE_URL**: The base URL for the API is defined.
+3. **Test Function**: The test function `test_get_users` is defined to perform the API request and assertions.
+4. **GET Request**: A GET request is made to the `/users` endpoint.
+5. **Status Code Assertion**: The response status code is asserted to be 200.
+6. **JSON Parsing**: The JSON response is parsed.
+7. **List Assertion**: It checks that the response is a list and is not empty.
+8. **Property Assertions**: Each user in the list is checked to ensure it contains the expected properties (`id`, `name`, `username`, and `email`).
+
+This test can be run using the command `pytest` in the terminal, assuming you have pytest and requests installed in your environment.",5
+testgen-04,Create a Cypress test for adding an item to a shopping cart.,"Here is a complete Cypress test code that follows the conventions and structure you provided. This test will cover the scenario of adding an item to a shopping cart and verifying the total price, as well as completing the purchase.
+
+```javascript
+/// <reference types=""Cypress"" />
+import { Given, When, Then } from ""cypress-cucumber-preprocessor/steps"";
+import Homepage from ""../../../support/pageObjects/Homepage"";
+import OrderSummaryPage from ""../../../support/pageObjects/orderSummaryPage"";
+import CompleteOrderPage from ""../../../support/pageObjects/completeOrderPage"";
+
+const homepage = new Homepage();
+const orderSummaryPage = new OrderSummaryPage();
+const completeOrderPage = new CompleteOrderPage();
+
+Given('I am on the Ecommerce page', () => {
+    cy.visit(Cypress.env('url') + ""/angularpractice/"");
+    cy.waitForLoadState('networkidle'); // Ensure the page is fully loaded
+});
+
+When('I add the mobile handsets to the shopping cart', function () {
+    homepage.getShopTab().click();
+    this.data.mobileHandset.forEach(function (element) {
+        cy.AddToCart(element); // Custom command to add items to the cart
+    });
+    orderSummaryPage.getBasketCheckoutButton().click();
+});
+
+Then('I verify the total price of shopping cart', () => {
+    let sum = 0;
+    orderSummaryPage.getProductCost().each(($e1) => {
+        const unitCost = parseFloat($e1.text().replace('$', '')); // Assuming price is in dollars
+        sum += unitCost;
+    }).then(() => {
+        orderSummaryPage.getTotalPrice().then(($total) => {
+            const totalPrice = parseFloat($total.text().replace('$', ''));
+            expect(totalPrice).to.equal(sum); // Assert that the total price matches the sum of individual prices
+        });
+    });
+});
+
+When('I select the checkout button', () => {
+    orderSummaryPage.getCheckoutButton().click();
+});
+
+When('I will select my shipping location', () => {
+    completeOrderPage.getShippingLocationDropdown().select('New York'); // Example location
+});
+
+When('I agree to the terms and conditions checkbox', () => {
+    completeOrderPage.getTermsCheckbox().check();
+});
+
+When('I select the Purchase button', () => {
+    completeOrderPage.getPurchaseButton().click();
+});
+
+Then('I will see an alert stating my order was successful, plus an ETA delivery', () => {
+    cy.on('window:alert', (str) => {
+        expect(str).to.equal('Your order has been placed successfully! Delivery ETA: 3-5 business days.'); // Example alert message
+    });
+});
+```
+
+### Explanation:
+1. **Page Object Model**: The test uses page objects (`Homepage`, `OrderSummaryPage`, and `CompleteOrderPage`) to encapsulate the logic for interacting with the UI elements.
+2. **Step Definitions**: Each step in the Gherkin syntax is mapped to a function that performs the necessary actions and assertions.
+3. **Assertions**: The test verifies that the total price in the shopping cart matches the sum of the individual item prices.
+4. **Alerts**: The test checks for an alert message confirming the successful order placement.
+5. **Cypress Commands**: Custom commands like `cy.AddToCart()` are assumed to be defined elsewhere in your Cypress setup.
+
+Make sure to adjust the selectors and messages according to your actual application structure and requirements.",4
+testgen-07,Write an API test in Playwright that POSTs to /login and checks for a token.,"Here's a runnable test code in TypeScript using Playwright that performs a POST request to the `/login` endpoint and checks for a token in the response. This follows the conventions you've provided, including the Page Object Model (POM) structure.
+
+```typescript
+import { test, expect, Page } from '@playwright/test';
+
+// BasePage class to be extended by LoginPage
+class BasePage {
+  constructor(protected page: Page) {}
+
+  async navigate() {
+    await this.page.waitForLoadState('networkidle');
+  }
+}
+
+// LoginPage class extending BasePage
+class LoginPage extends BasePage {
+  async login(email: string, password: string) {
+    const response = await this.page.request.post('/api/auth/login', {
+      data: { email, password }
+    });
+    const responseBody = await response.json();
+    
+    // Assert that the token is present in the response
+    expect(responseBody).toHaveProperty('token');
+    return responseBody.token; // Return the token for further use if needed
+  }
+}
+
+test.describe('Login API Tests', () => {
+  let loginPage: LoginPage;
+
+  test.beforeEach(async ({ page }) => {
+    loginPage = new LoginPage(page);
+    await loginPage.navigate(); // Ensure the page is loaded
+  });
+
+  test('should login and receive a token', async () => {
+    const token = await loginPage.login('user@test.com', 'pass');
+    
+    // You can add further assertions or actions using the token if needed
+    expect(token).toBeDefined(); // Ensure token is defined
+  });
+});
+```
+
+### Explanation:
+1. **BasePage Class**: This is a base class that contains a method to navigate and wait for the page to load completely.
+2. **LoginPage Class**: This class extends `BasePage` and contains a method `login` that performs the POST request to the `/login` endpoint. It checks if the token is present in the response.
+3. **Test Structure**: The test suite `Login API Tests` is defined using `test.describe`. The `beforeEach` hook initializes the `LoginPage` instance and navigates to the necessary page.
+4. **Assertions**: The test checks that a token is returned upon a successful login.
+
+This code adheres to the conventions specified and is ready to be run in a Playwright testing environment.",5
+mentor-06,What is contract testing and when should I use it?,"**What is Contract Testing?**
+
+Contract testing is a type of software testing that focuses on the interactions between different services or components in a system. The primary goal of contract testing is to ensure that the expectations (or ""contracts"") between a service provider and a service consumer are met. This is particularly useful when dealing with microservices or external APIs, where different teams may be responsible for different parts of the system.
+
+**Why Use Contract Testing?**
+
+1. **Decoupling Teams**: In a microservices architecture, different teams may develop services independently. Contract testing allows teams to work in parallel without needing to wait for each other, as long as they adhere to the agreed-upon contracts.
+
+2. **Reducing Flakiness**: External services can be slow or unreliable. By using contract tests, you can simulate the behavior of these services, which helps in reducing the flakiness of your tests.
+
+3. **Documentation**: Contract tests serve as living documentation of the expected interactions between services. This can help new team members understand how services are supposed to communicate.
+
+4. **Early Detection of Issues**: By testing the contracts early in the development process, you can catch integration issues before they reach production.
+
+**When to Use Contract Testing?**
+
+- **Microservices Architecture**: When your application is built using microservices, and you have multiple teams working on different services.
+- **External APIs**: When your application relies on third-party APIs, contract testing can help ensure that your application behaves correctly even if the external service changes.
+- **Frequent Changes**: If your services are frequently updated, contract testing can help ensure that changes do not break existing functionality.
+
+**Concrete Example in Python**
+
+Here's a simple example using the `pact` library, which is commonly used for contract testing in Python.
+
+```python
+from pact import Consumer, Provider
+
+# Define the consumer and provider
+consumer = Consumer('ConsumerService')
+provider = Provider('ProviderService')
+
+# Define the contract
+pact = consumer.has_pact_with(provider)
+
+# Define the expected interaction
+(pact
+ .given('a user exists')
+ .upon_receiving('a request for user details')
+ .with_request('get', '/users/1')
+ .will_respond_with(200, body={'id': 1, 'name': 'John Doe'}))
+
+# Start the pact server
+pact.start_service()
+
+# Your test code that makes a request to the provider
+# This would typically be your application code that you want to test
+
+# Verify the interactions
+pact.verify()
+
+# Stop the pact server
+pact.stop_service()
+```
+
+In this example, we define a contract for a consumer service that expects a specific response from a provider service when a request is made. The `pact` library helps in setting up the expectations and verifying that the provider meets them.
+
+**What to Explore Next:**
+- Explore the differences between Contract Testing and Integration Testing.
+- Learn about the Pact framework and how to implement contract testing in a microservices architecture.",5
+strategy-01,How should I test a user login and authentication flow?,"## Test Strategy: User Login and Authentication Flow
+
+### 1. Unit Tests
+Unit tests are essential to verify the correctness of individual functions and components involved in the authentication process. Focus on the login validation logic, error handling, and session management. Key areas to cover include:
+- Email format validation
+- Password strength validation
+- Session creation and destruction
+
+Example unit test for email validation:
+```python
+def test_valid_email_format():
+    assert is_valid_email(""test@example.com"") is True
+
+def test_invalid_email_format():
+    assert is_valid_email(""invalid-email"") is False
+```
+
+### 2. API Tests
+Test the authentication API endpoints to ensure they handle various scenarios correctly. Key endpoints to test include:
+- `POST /auth/login`: Validate successful login (200), invalid credentials (401), and missing fields (400).
+- `POST /auth/logout`: Validate successful logout (204) and session expiration.
+
+Example API test using pytest and requests:
+```python
+def test_login_with_valid_credentials():
+    response = requests.post(""http://localhost:8004/auth/login"", json={""email"": ""test@example.com"", ""password"": ""TestPass123""})
+    assert response.status_code == 200
+
+def test_login_with_invalid_credentials():
+    response = requests.post(""http://localhost:8004/auth/login"", json={""email"": ""test@example.com"", ""password"": ""wrongpassword""})
+    assert response.status_code == 401
+```
+
+### 3. E2E Tests (Critical Path)
+Automate the critical user flows using Playwright. Focus on the happy path (successful login and logout) and negative paths (invalid login attempts). 
+
+Example Playwright test:
+```typescript
+import { test, expect } from '@playwright/test';
+
+test('User can log in and log out', async ({ page }) => {
+    await page.goto('http://localhost:5173/auth');
+    await page.fill('input[name=""email""]', 'test@example.com');
+    await page.fill('input[name=""password""]', 'TestPass123');
+    await page.click('button[type=""submit""]');
+    await expect(page).toHaveURL('http://localhost:5173/dashboard');
+
+    await page.click('text=Logout');
+    await expect(page).toHaveURL('http://localhost:5173/auth');
+});
+```
+
+### 4. Performance Considerations
+Consider load testing the authentication endpoints to ensure they can handle a high number of concurrent logins, especially during peak times. Use k6 for performance testing.
+
+Example k6 script:
+```javascript
+import http from 'k6/http';
+import { check, sleep } from 'k6';
+
+export default function () {
+    const res = http.post('http://localhost:8004/auth/login', JSON.stringify({ email: 'test@example.com', password: 'TestPass123' }), {
+        headers: { 'Content-Type': 'application/json' },
+    });
+    check(res, { 'is status 200': (r) => r.status === 200 });
+    sleep(1);
+}
+```
+
+### 5. Where to Start
+Begin with unit tests for the email and password validation logic. These tests are foundational and will help catch issues early in the development process. 
+
+Example starter code for unit testing email validation:
+```python
+def test_email_validation():
+    assert is_valid_email(""test@example.com"") is True
+    assert is_valid_email("""") is False  # Negative case: empty email
+    assert is_valid_email(""invalid-email"") is False  # Negative case: no @ symbol
+```
+
+### Security and Accessibility Considerations
+- Ensure that sensitive data (like passwords) is handled securely during tests.
+- Validate that error messages do not expose sensitive information (e.g., whether the email exists).
+- Consider accessibility testing for the login form to ensure it is usable for all users, including those using assistive technologies. 
+
+### CI/CD Integration
+Integrate these tests into your CI/CD pipeline using GitHub Actions to ensure that every commit is validated against your test suite, maintaining the integrity of the authentication flow throughout development.",5
+mentor-01,What is the Page Object Model pattern and why is it useful?,"The **Page Object Model (POM)** is a design pattern commonly used in test automation, particularly for web applications. In this pattern, each web page is represented as a class, encapsulating the page's elements (locators) and the actions that can be performed on those elements. This abstraction allows for a more organized and maintainable test suite.
+
+### Why is POM Useful?
+
+1. **Separation of Concerns**: By separating the page structure (locators) from the test logic, POM promotes cleaner code. Tests focus on the ""what"" (the test scenario) rather than the ""how"" (the implementation details of the page).
+
+2. **Reusability**: Once a page object is created, it can be reused across multiple tests. This reduces code duplication and makes it easier to maintain tests when changes occur in the UI.
+
+3. **Maintainability**: When the UI changes, you only need to update the page object rather than every single test that interacts with that UI element. This encapsulation minimizes the risk of introducing bugs during maintenance.
+
+4. **Readability**: Tests that utilize POM are generally more readable. They describe the test scenario in a way that is closer to natural language, making it easier for stakeholders to understand.
+
+5. **Encapsulation of Actions**: POM allows you to encapsulate complex interactions with the UI into methods. This means that tests can call these methods without needing to know the details of how they are implemented.
+
+### Example in Python
+
+Here's a simple example of how you might implement the Page Object Model in Python using Selenium:
+
+```python
+from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.webdriver import WebDriver
+
+class LoginPage:
+    def __init__(self, driver: WebDriver):
+        self.driver = driver
+        self.username_input = (By.ID, ""username"")
+        self.password_input = (By.ID, ""password"")
+        self.login_button = (By.ID, ""login"")
+
+    def enter_username(self, username: str):
+        self.driver.find_element(*self.username_input).send_keys(username)
+
+    def enter_password(self, password: str):
+        self.driver.find_element(*self.password_input).send_keys(password)
+
+    def click_login(self):
+        self.driver.find_element(*self.login_button).click()
+
+# Usage in a test
+def test_login():
+    driver = ...  # Initialize your WebDriver
+    login_page = LoginPage(driver)
+    
+    login_page.enter_username(""testuser"")
+    login_page.enter_password(""password123"")
+    login_page.click_login()
+    
+    # Add assertions here to verify login success
+```
+
+In this example, the `LoginPage` class encapsulates the locators and actions related to the login page. The test function `test_login` uses this class to perform actions without needing to know the details of the page's structure.
+
+### Conclusion
+
+The Page Object Model is a powerful design pattern that enhances the maintainability, readability, and reusability of test automation code. It aligns well with industry best practices, such as the testing pyramid, by promoting a clear structure in your test suite.
+
+What to explore next:
+- **Test Automation Frameworks**: Learn about different frameworks like Selenium, Cypress, and Playwright.
+- **Test Types**: Understand the differences between unit, integration, and end-to-end testing.",5
+hard-08,"Here's my test, can you write a better version of it?
+```python
+def test_x():
+    pass
+```","## Code Review
+
+### 🔴 Critical Issues
+1. **Empty Test Function**: The function `test_x()` is defined but does not contain any assertions or logic. This will lead to a test that always passes, which is misleading.
+   - **Fix**: Implement meaningful test logic and assertions to validate the expected behavior of the code under test.
+   ```python
+   def test_x():
+       result = some_function_to_test()
+       assert result == expected_value, ""Expected value does not match the result.""
+   ```
+
+### 🟡 Warnings
+1. **Lack of Descriptive Naming**: The function name `test_x()` does not convey what is being tested. This can lead to confusion when reading the test suite.
+   - **Fix**: Rename the function to reflect the specific functionality being tested.
+   ```python
+   def test_some_functionality():
+       # test logic here
+   ```
+
+2. **No Setup or Teardown**: If the test requires any setup or teardown (e.g., initializing variables, creating test data), it should be included. This can lead to tests that are hard to maintain or understand.
+   - **Fix**: Use setup methods (like `setup_method` in pytest) to prepare the test environment.
+   ```python
+   import pytest
+
+   @pytest.fixture
+   def setup_environment():
+       # setup code here
+       yield
+       # teardown code here
+
+   def test_some_functionality(setup_environment):
+       # test logic here
+   ```
+
+### 🔵 Suggestions
+1. **Use of Assertions**: Ensure that assertions are clear and provide meaningful messages. This helps in debugging when tests fail.
+   - **Suggestion**: Use assert statements with descriptive messages to clarify what is being validated.
+   ```python
+   assert result == expected_value, ""Expected value does not match the result.""
+   ```
+
+2. **Consider Test Coverage**: Ensure that the test covers both positive and negative cases to validate the robustness of the functionality.
+   - **Suggestion**: Write multiple tests for different scenarios.
+   ```python
+   def test_function_with_valid_input():
+       # valid input test logic
+
+   def test_function_with_invalid_input():
+       # invalid input test logic
+   ```
+
+### ✅ What's Good
+- The initial structure of the test is present, indicating that there is an intention to write tests, which is a great start. This shows an understanding of the importance of automated testing.
+
+### Revised Code
+```python
+import pytest
+
+@pytest.fixture
+def setup_environment():
+    # setup code here
+    yield
+    # teardown code here
+
+def test_some_functionality(setup_environment):
+    result = some_function_to_test()
+    expected_value = ""expected_result""
+    assert result == expected_value, ""Expected value does not match the result.""
+```
+
+This revised code includes a proper test structure, meaningful assertions, and a setup fixture to ensure a clean testing environment. It also encourages maintainability and readability, which are crucial for effective test automation.",5
+mentor-07,Explain what shift-left testing means.,"Shift-left testing is a software testing approach that emphasizes performing testing activities earlier in the software development lifecycle (SDLC). The term ""shift-left"" refers to the idea of moving testing processes to the left side of the project timeline, which is typically where requirements and design activities occur. This approach is rooted in the principle of ""test early and often,"" which aims to identify and address defects as soon as possible, rather than waiting until later stages of development, such as during system testing or after deployment.
+
+### Why Shift-Left Testing?
+
+1. **Early Detection of Defects**: By testing early, teams can catch defects before they become more complex and costly to fix. This reduces the risk of late-stage surprises that can derail project timelines and budgets.
+
+2. **Improved Collaboration**: Shift-left testing encourages collaboration between developers, testers, and other stakeholders. This collaboration helps ensure that everyone has a shared understanding of requirements and quality expectations from the outset.
+
+3. **Faster Feedback Loops**: Early testing allows for quicker feedback on the quality of the software, enabling teams to make adjustments sooner and improve the overall product quality.
+
+4. **Cost Efficiency**: Fixing defects early in the development process is generally less expensive than addressing them later. The cost of fixing a defect increases significantly the later it is found in the SDLC.
+
+### Types of Shift-Left Testing
+
+1. **Traditional Shift-Left**: Focuses on unit testing and integration testing, moving the emphasis away from late-stage acceptance and system-level testing. For example, using tools like pytest for unit testing in Python:
+
+   ```python
+   # Example of a simple unit test using pytest
+   def add(a, b):
+       return a + b
+
+   def test_add():
+       assert add(2, 3) == 5
+       assert add(-1, 1) == 0
+   ```
+
+2. **Agile/DevOps Shift-Left**: Integrates testing into the Agile and DevOps practices, where testing is part of the continuous integration and delivery pipeline. This means that tests are run automatically with each code change.
+
+3. **Model-Based Shift-Left**: Involves testing requirements, architecture, and design models even before the actual software is developed. This can include activities like reviewing design documents or using tools to simulate user interactions based on design specifications.
+
+### Conclusion
+
+Shift-left testing is a proactive approach that aligns with modern software development practices, particularly Agile and DevOps. By integrating testing early in the development process, teams can enhance product quality, reduce costs, and improve collaboration.
+
+**What to explore next:**
+- The role of automated testing in shift-left testing.
+- Best practices for implementing shift-left testing in Agile environments.",5
+mentor-02,Explain the test automation pyramid.,"The Test Automation Pyramid is a conceptual framework that helps teams understand how to structure their automated testing efforts effectively. It emphasizes the importance of having a balanced portfolio of tests at different levels of granularity, which can lead to more efficient and maintainable testing practices.
+
+### Why Use the Test Automation Pyramid?
+
+1. **Cost-Effectiveness**: Lower-level tests (like unit tests) are generally cheaper to write and maintain than higher-level tests (like end-to-end tests). They are less brittle and can be run frequently, providing quick feedback on code changes.
+  
+2. **Speed**: Unit tests run quickly, allowing developers to identify issues early in the development process. In contrast, high-level tests, such as those that interact with the UI, can be slow and resource-intensive.
+
+3. **Early Bug Detection**: By focusing on unit tests, you can catch bugs at the earliest possible stage, reducing the cost and effort required to fix them later in the development cycle.
+
+4. **Maintainability**: Lower-level tests are typically easier to maintain than high-level tests. High-level tests can become fragile and require frequent updates as the UI changes.
+
+### Structure of the Test Automation Pyramid
+
+1. **Unit Tests**: 
+   - **Base of the Pyramid**: These tests validate individual components or functions in isolation. They are fast and should be written in large numbers.
+   - **Example** (Python using `pytest`):
+     ```python
+     def add(a, b):
+         return a + b
+
+     def test_add():
+         assert add(2, 3) == 5
+         assert add(-1, 1) == 0
+     ```
+
+2. **Integration Tests**: 
+   - **Middle Layer**: These tests check the interaction between different modules or services. They are fewer in number compared to unit tests but are crucial for ensuring that components work together as expected.
+   - **Example** (Python using `pytest`):
+     ```python
+     def test_addition_service(mocker):
+         mock_db = mocker.patch('database.get_data', return_value=[1, 2])
+         result = add_from_db()
+         assert result == 3
+     ```
+
+3. **End-to-End (E2E) Tests**: 
+   - **Top of the Pyramid**: These tests simulate real user scenarios and validate the entire application flow. They are the fewest in number due to their complexity and execution time.
+   - **Example** (TypeScript using Playwright):
+     ```typescript
+     import { test, expect } from '@playwright/test';
+
+     test('should add items to cart', async ({ page }) => {
+         await page.goto('https://example.com');
+         await page.click('text=Add to Cart');
+         const cartCount = await page.locator('.cart-count').innerText();
+         expect(cartCount).toBe('1');
+     });
+     ```
+
+### Conclusion
+
+The Test Automation Pyramid encourages teams to prioritize unit tests, followed by integration tests, and finally end-to-end tests. This approach leads to a more efficient testing strategy, enabling faster feedback and easier maintenance.
+
+### What to Explore Next:
+- **ISTQB Testing Principles**: Understanding the foundational principles that guide effective testing practices.
+- **Test Types**: Delve deeper into different types of tests such as performance, security, and visual testing.",5
+strategy-02,What is a good test strategy for a payment checkout feature?,"## Test Strategy: Payment Checkout Feature
+
+### 1. Unit Tests
+Unit tests should focus on validating the individual components of the checkout process, such as form validation, cart calculations, and payment processing logic. Key areas to cover include:
+- Validation of user input (e.g., shipping address, payment details).
+- Calculation of totals (including taxes and discounts).
+- Handling of edge cases like empty fields, invalid payment methods, and boundary values (e.g., maximum character lengths for address fields).
+
+Example test skeleton:
+```python
+def test_calculate_total_with_discount():
+    cart_items = [{""price"": 100, ""quantity"": 2}]
+    discount = 10  # 10% discount
+    total = calculate_total(cart_items, discount)
+    assert total == 180  # 200 - 20 (discount)
+```
+
+### 2. API Tests
+For the payment checkout feature, focus on the relevant API endpoints such as:
+- `POST /checkout` for initiating the checkout process.
+- `POST /payment` for processing payments.
+
+Key assertions to include:
+- 200 (successful checkout), 400 (bad request — missing fields), 402 (payment required — invalid payment info), and 500 (server error).
+
+Example API test using pytest and requests:
+```python
+def test_checkout_with_invalid_payment():
+    response = requests.post(URL + ""/payment"", json={""card_number"": ""invalid"", ""expiry"": ""12/23""})
+    assert response.status_code == 402
+    assert response.json()[""error""] == ""Invalid payment information""
+```
+
+### 3. E2E Tests (Critical Path)
+Automate the critical user flows for the checkout process using Playwright. This includes:
+- User adds items to the cart.
+- User navigates through the checkout steps (address entry, payment info, confirmation).
+- Validating that the correct success or error messages are displayed based on user input.
+
+Starter code for Playwright:
+```typescript
+import { test, expect } from '@playwright/test';
+
+test('Checkout process', async ({ page }) => {
+    await page.goto('/cart');
+    await page.click('text=Checkout');
+    await page.fill('input[name=""address""]', '123 Main St');
+    await page.fill('input[name=""card_number""]', '4111111111111111'); // Valid card for testing
+    await page.click('text=Submit');
+    await expect(page).toHaveURL('/confirmation');
+    await expect(page.locator('text=Thank you for your purchase')).toBeVisible();
+});
+```
+
+### 4. Performance Considerations
+Load testing the checkout process is crucial, especially during peak shopping seasons. Set load targets based on expected user traffic (e.g., 1000 concurrent users).
+
+Example k6 snippet:
+```javascript
+import http from 'k6/http';
+import { check, sleep } from 'k6';
+
+export default function () {
+    const res = http.post('https://yourapi.com/checkout', JSON.stringify({ /* checkout data */ }), {
+        headers: { 'Content-Type': 'application/json' },
+    });
+    check(res, { 'status was 200': (r) => r.status === 200 });
+    sleep(1);
+}
+```
+
+### 5. Where to Start
+Begin with automating the API tests for invalid payment scenarios. This provides high value by catching critical bugs early in the process without the flakiness of UI tests.
+```python
+def test_checkout_empty_address():
+    response = requests.post(URL + ""/checkout"", json={""address"": """", ""payment_info"": {}})
+    assert response.status_code == 400
+    assert response.json()[""error""] == ""Address is required""
+```
+
+### Security and Accessibility Considerations
+- Ensure that sensitive information (like payment details) is handled securely and complies with PCI DSS standards.
+- Implement accessibility testing to ensure that all users can navigate the checkout process effectively, including those using assistive technologies.
+
+### CI/CD Integration
+Integrate all tests into a CI/CD pipeline using GitHub Actions to ensure that every commit triggers the test suite, allowing for immediate feedback on the checkout feature's stability.",5
+mentor-05,What is the difference between implicit and explicit waits?,"Understanding the difference between implicit and explicit waits is crucial for effective automation testing with Selenium WebDriver. Both types of waits are used to handle situations where elements are not immediately available in the DOM, but they serve different purposes and have distinct behaviors.
+
+### Implicit Wait
+**What it is:** An implicit wait is a global setting that tells the WebDriver to wait for a specified amount of time when trying to find an element. If the element is not found within that time frame, a `NoSuchElementException` is thrown.
+
+**Why it matters:** The implicit wait is set for the entire duration of the WebDriver instance. This means that every time you try to locate an element, the WebDriver will wait for the specified time before throwing an exception. However, this can lead to unpredictable behavior, especially if different elements have different loading times.
+
+**Example in Python:**
+```python
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+import time
+
+driver = webdriver.Chrome()
+driver.implicitly_wait(10)  # Set implicit wait for 10 seconds
+
+driver.get(""https://example.com"")
+try:
+    element = driver.find_element(By.ID, ""someElementId"")
+except Exception as e:
+    print(""Element not found:"", e)
+
+driver.quit()
+```
+
+### Explicit Wait
+**What it is:** An explicit wait is more flexible and allows you to wait for a specific condition to occur before proceeding. You can define the wait time for individual elements, and you can specify conditions such as visibility, clickability, or presence.
+
+**Why it matters:** Explicit waits provide more control and are generally preferred because they can be tailored to specific elements and conditions. This makes your tests more reliable and easier to maintain.
+
+**Example in Python:**
+```python
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+driver = webdriver.Chrome()
+driver.get(""https://example.com"")
+
+try:
+    # Wait for a specific element to be visible
+    element = WebDriverWait(driver, 10).until(
+        EC.visibility_of_element_located((By.ID, ""someElementId""))
+    )
+except Exception as e:
+    print(""Element not found:"", e)
+
+driver.quit()
+```
+
+### Key Differences
+1. **Scope**: Implicit wait is set for the entire WebDriver instance, while explicit wait is set for specific elements.
+2. **Behavior**: Implicit waits can lead to unpredictable behavior since they apply to all element searches, whereas explicit waits are more predictable and can handle different conditions.
+3. **Flexibility**: Explicit waits allow you to wait for specific conditions, while implicit waits do not provide this level of granularity.
+
+### Conclusion
+In general, it is recommended to use explicit waits over implicit waits due to their flexibility and reliability. Mixing the two can lead to unexpected results and should be avoided.
+
+**What to explore next:**
+- The different types of conditions you can use with explicit waits.
+- Best practices for handling waits in Selenium tests.",5
+hard-03,What is a good testing approach when I don't know where to start on a new legacy codebase?,"## Test Strategy: Legacy Codebase Testing
+
+### 1. Unit Tests
+Start by identifying the smallest testable units in your codebase, such as functions or methods that handle specific logic. Focus on the most critical areas first, like data retrieval and merging logic. Use boundary value analysis to test the limits of your data inputs, and include negative tests for invalid or unexpected inputs.
+
+Example test skeleton for a data retrieval function:
+```python
+def test_data_retrieval_empty_date():
+    assert retrieve_data("""") == []  # Test for empty date input
+
+def test_data_retrieval_valid_date():
+    assert len(retrieve_data(""2023-01-01"")) > 0  # Test for valid date input
+```
+
+### 2. API Tests
+Identify the key API endpoints that interact with the legacy codebase. Test for expected responses based on valid and invalid inputs. Ensure to cover edge cases, such as querying with dates that do not exist in the database or malformed requests.
+
+Example API test using pytest and requests:
+```python
+def test_api_invalid_date():
+    response = requests.get(f""{API_URL}/data?date=invalid-date"")
+    assert response.status_code == 400  # Expecting a bad request for invalid date
+```
+
+### 3. E2E Tests (Critical Path)
+Automate the most critical user flows that involve the legacy codebase. Focus on scenarios that directly impact user experience, such as data fetching and display. Use Playwright for E2E testing to ensure the UI behaves as expected when interacting with the backend.
+
+Starter code for an E2E test using Playwright:
+```typescript
+import { test, expect } from '@playwright/test';
+
+test('User fetches data for a valid date', async ({ page }) => {
+    await page.goto('http://yourapp.com');
+    await page.fill('input[name=""date""]', '2023-01-01');
+    await page.click('button[type=""submit""]');
+    await expect(page.locator('.data-display')).toContainText('Expected Data');
+});
+```
+
+### 4. Performance Considerations
+Assess the performance of your legacy code by simulating load on the most critical endpoints. Aim for a target response time under 200ms for key operations. Use k6 for load testing to identify bottlenecks.
+
+Example k6 script snippet:
+```javascript
+import http from 'k6/http';
+import { sleep } from 'k6';
+
+export default function () {
+    http.get('http://yourapp.com/api/data?date=2023-01-01');
+    sleep(1);
+}
+```
+
+### 5. Where to Start
+Begin with unit tests for the most critical functions that handle data retrieval and merging. This will provide immediate feedback and help you understand the code better. Focus on negative and edge cases first to ensure robustness.
+
+Example snippet to kick off unit testing:
+```python
+def test_data_merge_empty_lists():
+    assert merge_data([], []) == []  # Test merging of empty lists
+```
+
+### Additional Considerations
+- **CI/CD Integration**: Integrate your tests into a CI/CD pipeline using GitHub Actions to automate testing on every commit. This ensures that any changes to the legacy codebase are validated against your tests.
+- **Security and Accessibility**: Be mindful of any user data handled by the legacy code. Implement security tests to ensure data protection and accessibility tests to ensure compliance with standards like WCAG.
+
+### Learning Resources
+- **Books**: ""Working Effectively with Legacy Code"" by Michael Feathers provides strategies for testing and refactoring legacy systems.
+- **Online Courses**: Look for courses on platforms like Udemy or Coursera that focus on testing legacy code and best practices in unit testing.
+- **Communities**: Join QA and testing communities on platforms like Reddit or Stack Overflow to ask questions and share experiences with others facing similar challenges.",5
+hard-04,What is the test automation pyramid and how would I apply it to a new mobile app?,"The Test Automation Pyramid is a conceptual framework that helps teams understand how to structure their automated testing efforts effectively. The pyramid illustrates the different levels of testing, emphasizing that you should have a larger number of low-level tests (like Unit Tests) and fewer high-level tests (like End-to-End Tests). This structure helps ensure that tests are efficient, maintainable, and provide quick feedback.
+
+### Why the Test Automation Pyramid Matters
+
+1. **Efficiency**: Unit Tests are fast and can be run frequently, allowing developers to catch issues early in the development cycle. This aligns with the ""shift-left"" testing principle, which advocates for testing earlier in the Software Development Life Cycle (SDLC).
+
+2. **Cost-Effectiveness**: High-level tests, such as End-to-End (E2E) tests, are more complex and time-consuming. If you have too many of these, it can slow down your CI/CD pipeline and make it harder to pinpoint issues.
+
+3. **Maintainability**: A well-structured test suite makes it easier to maintain tests. If you have a balanced number of tests at each level, you can quickly identify which tests are failing and why.
+
+### Applying the Test Automation Pyramid to a New Mobile App
+
+When developing a new mobile app, you can apply the Test Automation Pyramid as follows:
+
+1. **Unit Tests**: Start by writing Unit Tests for your app's core functionalities. These tests should cover individual functions or methods and ensure they behave as expected. For example, if you have a function that calculates the total price of items in a cart, you would write a Unit Test to verify that it returns the correct value.
+
+   **Example in Python:**
+   ```python
+   def calculate_total(prices):
+       return sum(prices)
+
+   def test_calculate_total():
+       assert calculate_total([10, 20, 30]) == 60
+       assert calculate_total([5]) == 5
+   ```
+
+2. **Integration Tests**: Next, write Integration Tests to check how different modules of your app work together. For example, if you have a module for handling user authentication and another for managing user profiles, you would test the interaction between these two modules.
+
+   **Example in TypeScript:**
+   ```typescript
+   import { authenticateUser } from './auth';
+   import { getUserProfile } from './profile';
+
+   test('User authentication and profile retrieval', async () => {
+       const user = await authenticateUser('username', 'password');
+       const profile = await getUserProfile(user.id);
+       expect(profile.username).toBe('username');
+   });
+   ```
+
+3. **End-to-End Tests**: Finally, implement E2E tests to simulate user interactions with the app. These tests should cover critical user journeys, such as logging in, making a purchase, or navigating through the app. Tools like Appium or Cypress can be used for this purpose.
+
+   **Example with Cypress:**
+   ```javascript
+   describe('User Login', () => {
+       it('should log in successfully', () => {
+           cy.visit('/login');
+           cy.get('input[name=username]').type('username');
+           cy.get('input[name=password]').type('password');
+           cy.get('button[type=submit]').click();
+           cy.url().should('include', '/dashboard');
+       });
+   });
+   ```
+
+### Conclusion
+
+By following the Test Automation Pyramid, you ensure that your testing strategy is efficient, cost-effective, and maintainable. This approach not only helps in catching bugs early but also in providing a robust foundation for your mobile app.
+
+What to explore next:
+- The differences between Unit, Integration, and End-to-End testing.
+- Best practices for writing maintainable tests in mobile applications.",5
+testgen-03,Write a Playwright test that fills a contact form and asserts a success message.,"```typescript
+import { test, expect } from '@playwright/test';
+
+class ContactPage {
+  constructor(private page: Page) {}
+
+  async navigate() {
+    await this.page.goto('https://practice.automationbro.com/contact/');
+    await this.page.waitForLoadState('networkidle');
+  }
+
+  async fillContactForm(name: string, email: string, phone: string, message: string) {
+    await expect(this.page.getByRole('textbox', { name: 'Name' })).toBeVisible();
+    await this.page.getByRole('textbox', { name: 'Name' }).fill(name);
+
+    await expect(this.page.getByRole('textbox', { name: 'Email' })).toBeVisible();
+    await this.page.getByRole('textbox', { name: 'Email' }).fill(email);
+
+    await expect(this.page.getByRole('textbox', { name: 'Phone' })).toBeVisible();
+    await this.page.getByRole('textbox', { name: 'Phone' }).fill(phone);
+
+    await expect(this.page.getByRole('textbox', { name: 'Message' })).toBeVisible();
+    await this.page.getByRole('textbox', { name: 'Message' }).fill(message);
+
+    await expect(this.page.getByRole('button', { name: 'Submit' })).toBeVisible();
+    await this.page.getByRole('button', { name: 'Submit' }).click();
+    
+    await expect(this.page.getByText('Thanks for contacting us! We will be in touch with you shortly')).toBeVisible();
+  }
+}
+
+test.describe('Contact Form', () => {
+  let contactPage: ContactPage;
+
+  test.beforeEach(async ({ page }) => {
+    contactPage = new ContactPage(page);
+    await contactPage.navigate();
+  });
+
+  test('should fill contact details and verify success message', async () => {
+    await contactPage.fillContactForm('John Doe', 'john.doe@example.com', '+36123456789', 'This is a test message.');
+  });
+});
+``` 
+
+This code follows the specified conventions, utilizing the Page Object Model (POM) to encapsulate the contact form interactions. The test case fills out the contact form and asserts that the success message is visible after submission.",5
+reviewer-02,"What's wrong with this test?
+```javascript
+test('checkout', async ({ page }) => {
+  await page.goto('/cart');
+  await page.waitForTimeout(5000);
+  await page.click('.btn');
+});
+```","## Code Review
+
+### 🔴 Critical Issues
+1. **Hard-coded waitForTimeout() detected**: The line `await page.waitForTimeout(5000);` introduces a fixed wait time, which can lead to flaky tests. If the page takes less than 5 seconds to load, the test will unnecessarily wait, and if it takes longer, the test may fail due to timeouts. 
+   - **Fix**: Replace the hard-coded wait with a more reliable wait method that checks for the visibility of the button before clicking.
+   ```javascript
+   await page.goto('/cart');
+   await page.click('.btn', { timeout: 5000 });
+   ```
+
+### 🟡 Warnings
+1. **Lack of error handling**: The current test does not handle potential errors that may occur during navigation or clicking. This can lead to uninformative test failures.
+   - **Fix**: Implement try-catch blocks to handle errors gracefully and provide meaningful messages.
+   ```javascript
+   try {
+     await page.goto('/cart');
+     await page.click('.btn', { timeout: 5000 });
+   } catch (error) {
+     console.error('Test failed:', error);
+   }
+   ```
+
+### 🔵 Suggestions
+1. **Use of meaningful test names**: The test name 'checkout' could be more descriptive. Consider renaming it to reflect the specific action being tested, such as 'should navigate to cart and click checkout button'.
+   - **Suggestion**: Rename the test to `test('should navigate to cart and click checkout button', async ({ page }) => {...});`
+   
+2. **Add assertions**: The test currently performs actions but does not verify the outcome. Adding assertions will help confirm that the expected behavior occurs after the button is clicked.
+   - **Suggestion**: After clicking the button, add an assertion to check if the expected element appears on the next page.
+   ```javascript
+   expect(await page.isVisible('.checkout-confirmation')).toBe(true);
+   ```
+
+### ✅ What's Good
+- The test structure is straightforward and easy to understand, which is a good practice for readability.
+- The use of async/await is appropriate for handling asynchronous operations, making the code cleaner and easier to follow.
+
+### Revised Code
+```javascript
+test('should navigate to cart and click checkout button', async ({ page }) => {
+  try {
+    await page.goto('/cart');
+    await page.click('.btn', { timeout: 5000 });
+    expect(await page.isVisible('.checkout-confirmation')).toBe(true);
+  } catch (error) {
+    console.error('Test failed:', error);
+  }
+});
+```
+
+This revised version incorporates best practices by eliminating hard-coded waits, adding error handling, and including assertions to verify that the test behaves as expected. This will help ensure the test is more reliable and maintainable.",5
+strategy-07,What is the right testing approach for a shopping cart?,"## Test Strategy: Shopping Cart
+
+### 1. Unit Tests
+Unit tests will focus on the core functionalities of the ShoppingCart class, such as adding items, removing items, and calculating totals. We will also validate edge cases like adding the same item multiple times, removing items that don't exist, and ensuring the cart handles empty states correctly.
+
+Example tests include:
+- Adding a product to the cart.
+- Removing a product from the cart.
+- Calculating the total price with various quantities.
+
+```python
+def test_add_product_increases_cart_count():
+    cart = ShoppingCart()
+    cart.add_to_cart(product_id=""123"", quantity=1)
+    assert cart.get_item_count() == 1
+
+def test_remove_product_decreases_cart_count():
+    cart = ShoppingCart()
+    cart.add_to_cart(product_id=""123"", quantity=1)
+    cart.remove_from_cart(product_id=""123"")
+    assert cart.get_item_count() == 0
+
+def test_total_price_calculation():
+    cart = ShoppingCart()
+    cart.add_to_cart(product_id=""123"", quantity=2, price=10.00)
+    assert cart.calculate_total() == 20.00
+```
+
+### 2. API Tests
+For the shopping cart API, we will test the following endpoints:
+- `POST /cart/add`: to add items to the cart.
+- `DELETE /cart/remove`: to remove items from the cart.
+- `GET /cart`: to retrieve the current cart state.
+
+Key assertions will include checking response status codes (200 for success, 404 for not found, etc.), validating response schemas, and ensuring that the cart's state is updated correctly after each operation.
+
+```python
+def test_add_item_to_cart():
+    response = requests.post('/cart/add', json={""product_id"": ""123"", ""quantity"": 1})
+    assert response.status_code == 200
+    assert response.json() == {""message"": ""Item added successfully""}
+
+def test_remove_item_from_cart():
+    response = requests.delete('/cart/remove', json={""product_id"": ""123""})
+    assert response.status_code == 200
+    assert response.json() == {""message"": ""Item removed successfully""}
+```
+
+### 3. E2E Tests (Critical Path)
+Using Playwright, we will automate user flows that represent the critical path of a shopping cart. This includes:
+- Adding an item to the cart and verifying it appears in the cart.
+- Removing an item from the cart and ensuring it no longer appears.
+- Checking out and verifying the order summary.
+
+Starter code for Playwright:
+```typescript
+import { test, expect } from '@playwright/test';
+
+test('Add and remove item from shopping cart', async ({ page }) => {
+    await page.goto('/shop');
+    await page.click('text=Add to Cart'); // Assuming there's a button to add to cart
+    await page.click('text=Cart');
+    await expect(page.locator('text=Product Name')).toBeVisible(); // Verify item is in cart
+
+    await page.click('text=Remove'); // Assuming there's a button to remove from cart
+    await expect(page.locator('text=Product Name')).not.toBeVisible(); // Verify item is removed
+});
+```
+
+### 4. Performance Considerations
+We need to ensure that the shopping cart can handle a high volume of concurrent users. Load testing should target at least 1000 simultaneous users adding/removing items. Using k6, we can simulate this load.
+
+```javascript
+import http from 'k6/http';
+import { sleep } from 'k6';
+
+export default function () {
+    http.post('http://example.com/cart/add', JSON.stringify({ product_id: '123', quantity: 1 }), { headers: { 'Content-Type': 'application/json' } });
+    sleep(1);
+}
+```
+
+### 5. Where to Start
+Begin by automating the unit tests for the core functionalities of the ShoppingCart class. This will provide immediate feedback on the most critical parts of the feature and help catch bugs early in the development process.
+
+```python
+# Start with unit tests for adding a product
+def test_add_product_increases_cart_count():
+    cart = ShoppingCart()
+    cart.add_to_cart(product_id=""123"", quantity=1)
+    assert cart.get_item_count() == 1
+```
+
+### Security and Accessibility Concerns
+- Ensure that user data (like product IDs",4
+testgen-05,Write a Playwright test that checks pagination on a results table.,"Here's a complete Playwright test that checks pagination on a results table using the Page Object Model (POM) approach. The test will navigate to a specified page, check if the results table is visible, interact with the pagination controls, and assert that the correct results are displayed.
+
+### Test Code
+
+```typescript
+import { test, expect, Page } from '@playwright/test';
+
+class ResultsPage {
+  constructor(private page: Page) {}
+
+  async navigate() {
+    await this.page.goto('/results'); // Adjust the URL as necessary
+    await this.page.waitForLoadState('networkidle');
+  }
+
+  async isResultsTableVisible() {
+    const resultsTable = this.page.getByTestId('results-table');
+    await expect(resultsTable).toBeVisible();
+  }
+
+  async goToNextPage() {
+    const nextPageButton = this.page.getByRole('button', { name: 'Next' });
+    await expect(nextPageButton).toBeVisible(); // Assert before interaction
+    await nextPageButton.click();
+    await this.page.waitForLoadState('networkidle'); // Wait for the page to load
+  }
+
+  async checkResultsOnPage(expectedResults: string[]) {
+    const results = await this.page.locator('.result-item'); // Assuming result items have this class
+    const resultsText = await results.allTextContents();
+    expect(resultsText).toEqual(expectedResults); // Assert that the results match
+  }
+}
+
+test.describe('Pagination on Results Table', () => {
+  let resultsPage: ResultsPage;
+
+  test.beforeEach(async ({ page }) => {
+    resultsPage = new ResultsPage(page);
+    await resultsPage.navigate();
+  });
+
+  test('should display correct results on the first page', async () => {
+    await resultsPage.isResultsTableVisible();
+    await resultsPage.checkResultsOnPage(['Result 1', 'Result 2', 'Result 3']); // Adjust expected results
+  });
+
+  test('should paginate to the next page and display correct results', async () => {
+    await resultsPage.isResultsTableVisible();
+    await resultsPage.goToNextPage();
+    await resultsPage.checkResultsOnPage(['Result 4', 'Result 5', 'Result 6']); // Adjust expected results
+  });
+});
+```
+
+### Explanation
+1. **ResultsPage Class**: This class encapsulates the actions and assertions related to the results page.
+   - `navigate()`: Navigates to the results page and waits for the network to be idle.
+   - `isResultsTableVisible()`: Asserts that the results table is visible.
+   - `goToNextPage()`: Clicks the ""Next"" button to go to the next page and waits for the page to load.
+   - `checkResultsOnPage(expectedResults: string[])`: Asserts that the displayed results match the expected results.
+
+2. **Test Structure**: 
+   - The `test.describe` block groups related tests for pagination.
+   - The `test.beforeEach` hook initializes the `ResultsPage` object and navigates to the results page before each test.
+   - Two tests are defined:
+     - The first test checks that the correct results are displayed on the first page.
+     - The second test checks that the pagination works correctly and that the expected results are displayed on the next page.
+
+Make sure to adjust the expected results and the URL in the `navigate` method according to your application's specifics.",5
