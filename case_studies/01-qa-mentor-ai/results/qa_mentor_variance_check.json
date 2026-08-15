@@ -1,0 +1,62 @@
+{
+  "per_input": {
+    "mentor-01": {
+      "mean": 1.0,
+      "stdev": 0.0,
+      "n": 3,
+      "regression_floor": 1.0,
+      "regression_ceiling": 1.0
+    },
+    "strategy-01": {
+      "mean": 1.0,
+      "stdev": 0.0,
+      "n": 3,
+      "regression_floor": 1.0,
+      "regression_ceiling": 1.0
+    },
+    "testgen-01": {
+      "mean": 1.0,
+      "stdev": 0.0,
+      "n": 3,
+      "regression_floor": 1.0,
+      "regression_ceiling": 1.0
+    },
+    "reviewer-01": {
+      "mean": 1.0,
+      "stdev": 0.0,
+      "n": 3,
+      "regression_floor": 1.0,
+      "regression_ceiling": 1.0
+    },
+    "hard-04": {
+      "mean": 1.0,
+      "stdev": 0.0,
+      "n": 3,
+      "regression_floor": 1.0,
+      "regression_ceiling": 1.0
+    },
+    "hard-09": {
+      "mean": 1.0,
+      "stdev": 0.0,
+      "n": 3,
+      "regression_floor": 1.0,
+      "regression_ceiling": 1.0
+    }
+  },
+  "overall": {
+    "mean": 1.0,
+    "stdev": 0.0,
+    "n": 18,
+    "regression_floor": 1.0,
+    "regression_ceiling": 1.0
+  },
+  "k": 3,
+  "subset": [
+    "hard-04",
+    "hard-09",
+    "mentor-01",
+    "reviewer-01",
+    "strategy-01",
+    "testgen-01"
+  ]
+}
