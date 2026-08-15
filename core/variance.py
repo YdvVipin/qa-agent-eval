@@ -26,8 +26,9 @@ def variance_report(scores: list[float]) -> dict:
 
 
 def is_regression(new_score: float, baseline: dict) -> bool:
-    """True if new_score falls outside the baseline's 2-sigma band."""
-    return not (baseline["regression_floor"] <= new_score <= baseline["regression_ceiling"])
+    """True if new_score falls BELOW the baseline's 2-sigma floor (a regression,
+    not an improvement — those aren't flagged by this check)."""
+    return new_score < baseline["regression_floor"]
 
 
 def run_variance_suite(adapter, inputs: list[dict], k: int, score_fn: Callable[[dict], float]) -> dict:
@@ -56,7 +57,8 @@ def demo():
     assert report["mean"] == 1.0
     assert report["stdev"] == 0.0
     assert not is_regression(1.0, report)
-    assert is_regression(5.0, report)
+    assert is_regression(0.0, report)  # below the floor: flagged
+    assert not is_regression(5.0, report)  # above the ceiling (an improvement): not flagged
 
     try:
         variance_report([0.3])
