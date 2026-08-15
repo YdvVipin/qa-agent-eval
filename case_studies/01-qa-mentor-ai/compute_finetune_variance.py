@@ -34,8 +34,18 @@ pass rate — "the fine-tune regressed."
 | `qwen2.5-coder:3b` (base) | {base_mean:.1%} | {base_std:.3f} | {base_runs} |
 | `qa-coder-v2` (fine-tuned) | {tuned_mean:.1%} | {tuned_std:.3f} | {tuned_runs} |
 
-The base model's 2-sigma band is [{base_floor:.1%}, {base_ceiling:.1%}]. The tuned
-model's mean falls **{inside_outside}** that band.
+**Two ways to read this, and they disagree — stated plainly rather than picking the
+more flattering one:**
+
+1. **Single-run noise band** (this repo's chosen regression threshold: mean +/- 2 stdev
+   of the base model's own run-to-run spread): [{base_floor:.1%}, {base_ceiling:.1%}].
+   The tuned model's mean falls **{inside_outside}** that band. By this test alone,
+   no statistically flagged regression.
+2. **Paired comparison across the {k} runs**: the base model beat the tuned model in
+   {base_wins} of {k} runs, with {overlap_text}. A sample this small (n=13 holdout
+   items, K={k} runs) can't support a confident verdict either way, but a {base_wins}/{k}
+   sweep with that pattern is a real directional signal the single-run band is too
+   generous to catch.
 
 **Honest statement:** {verdict}
 
@@ -70,20 +80,40 @@ def main():
               f"per-run={[f'{x:.0%}' for x in rates]}")
 
     base, tuned = reports[MODELS[0]], reports[MODELS[1]]
+    base_runs, tuned_runs = per_run[MODELS[0]], per_run[MODELS[1]]
     regressed = is_regression(tuned["mean"], base)
-    verdict = (
-        "The fine-tune regressed, even accounting for run-to-run variance."
-        if regressed else
-        "No measurable improvement or regression from the base model, given the "
-        "measured variance — the original single-run comparison was inside noise."
-    )
+
+    base_wins = sum(1 for b, t in zip(base_runs, tuned_runs) if b > t)
+    overlap = not (min(base_runs) > max(tuned_runs) or max(base_runs) < min(tuned_runs))
+    overlap_text = "overlapping ranges" if overlap else "no overlap between the two models' per-run ranges"
+
+    if regressed:
+        verdict = "The fine-tune regressed, even accounting for run-to-run variance."
+    else:
+        if base_wins == k:
+            win_phrase = "won every paired run"
+        elif base_wins == 0:
+            win_phrase = "won none of the paired runs"
+        else:
+            win_phrase = f"won {base_wins} of {k} paired runs"
+        verdict = (
+            "The single-run noise-band test doesn't flag a statistically significant "
+            f"regression. But the base model {win_phrase}, with {overlap_text} — a real, "
+            "if statistically underpowered, directional signal that the fine-tune "
+            "underperforms the base model. Combined with the tuned model's zero "
+            "per-item variance (below), this is genuinely inconclusive rather than a "
+            "clean null result: not the confirmed regression originally claimed, and "
+            "not confidently \"no difference\" either."
+        )
     print(f"\nBase 2-sigma band: [{base['regression_floor']:.1%}, {base['regression_ceiling']:.1%}]")
+    print(f"base_wins={base_wins}/{k}  overlap={overlap}")
     print(f"Verdict: {verdict}")
 
     results_dir = HERE / "results"
     results_dir.mkdir(exist_ok=True)
     (results_dir / "finetune_variance_report.json").write_text(
-        json.dumps({"per_model": reports, "per_run": per_run, "regressed": regressed}, indent=2))
+        json.dumps({"per_model": reports, "per_run": per_run, "regressed": regressed,
+                     "base_wins": base_wins, "k": k, "overlap": overlap}, indent=2))
 
     correction_text = CORRECTION_TEMPLATE.format(
         base_orig=ORIGINAL_ROUND1[MODELS[0]], tuned_orig=ORIGINAL_ROUND1[MODELS[1]], k=k,
@@ -91,6 +121,7 @@ def main():
         tuned_mean=tuned["mean"], tuned_std=tuned["stdev"], tuned_runs=[f"{x:.0%}" for x in per_run[MODELS[1]]],
         base_floor=base["regression_floor"], base_ceiling=base["regression_ceiling"],
         inside_outside="OUTSIDE" if regressed else "INSIDE", verdict=verdict,
+        base_wins=base_wins, overlap_text=overlap_text,
     )
     correction_path = HERE.parents[1] / "docs" / "correction.md"
     correction_path.parent.mkdir(exist_ok=True)

@@ -32,8 +32,11 @@ a multi-agent RAG QA-automation assistant. Headline findings:
   sample; that's a real limitation on this specific number, disclosed here rather
   than glossed over.
 - **The correction:** a previous claim that fine-tuning regressed the model's codegen
-  quality (4/13 vs 3/13 compile pass rate, single run each) turned out to be a
-  one-example difference with no variance baseline — inside noise. See
+  quality (4/13 vs 3/13 compile pass rate, single run each) had no variance baseline.
+  A K=5 re-run doesn't clear this repo's statistical regression bar, but the base
+  model beat the tuned model in all 5 of 5 paired runs with zero overlap between the
+  two models' per-run ranges — inconclusive but directionally suggestive, not the
+  clean "no difference" the single-run band alone would say. See
   [`docs/correction.md`](docs/correction.md) for the full re-measurement.
 
 ## Status
@@ -43,6 +46,11 @@ is planned once that system exists — `core/`'s `SystemAdapter` interface is de
 so it plugs in without restructuring anything here.
 
 ## Running it
+
+Prerequisites: this repo assumes a sibling checkout of `myNanoGpt` (the QA Mentor AI
+system being evaluated) at `../myNanoGpt` relative to this repo, with its own server
+running (`uvicorn chat_api:app --host 0.0.0.0 --port 8004` from within that repo) and
+an `OPENAI_API_KEY` in its `.env` for the judge calls.
 
 Everything in `core/` is stdlib-only. Anything that calls the live QA Mentor AI
 pipeline or the gpt-4o-mini judge needs `myNanoGpt`'s own virtualenv (already has

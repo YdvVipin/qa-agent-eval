@@ -31,5 +31,8 @@
       0.23076923076923078
     ]
   },
-  "regressed": false
+  "regressed": false,
+  "base_wins": 5,
+  "k": 5,
+  "overlap": false
 }

@@ -3,7 +3,7 @@ keyword scoring, and LLM judge rather than reimplementing them. Requires the
 QA Mentor AI server running (uvicorn chat_api:app --port 8004 in myNanoGpt)
 and myNanoGpt's venv (needs requests, python-dotenv):
 
-    ../myNanoGpt/.venv/bin/python3 adapter.py
+    ../../../myNanoGpt/.venv/bin/python3 case_studies/01-qa-mentor-ai/adapter.py
 """
 import os
 import sys
