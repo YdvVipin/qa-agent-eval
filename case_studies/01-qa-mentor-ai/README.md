@@ -71,8 +71,8 @@ implying all three tiers are demonstrated here.
 ## Variance check on QA Mentor AI's own intent routing
 
 The variance harness (`core/variance.py`) was previously only ever exercised against
-the separate fine-tune codegen model (above), never against this case study's own
-system. `run_variance_check.py` closes that gap with a small, live K=3 check: 6 items
+the separate fine-tune codegen model (see "The fine-tune post-mortem" below), never
+against this case study's own system. `run_variance_check.py` closes that gap with a small, live K=3 check: 6 items
 (one per intent, plus two boundary cases from the hardened set, `hard-04` and
 `hard-09`) run 3 times each against the live pipeline — 18 calls total.
 
