@@ -47,6 +47,17 @@ more flattering one:**
    sweep with that pattern is a real directional signal the single-run band is too
    generous to catch.
 
+**Per-item note:** the tuned model's zero stdev is not a rounding artifact — at the
+per-item level, `qa-coder-v2` passed the exact same {tuned_always_pass} of 13 holdout
+items on every one of the {k} seeded runs and failed the exact same {tuned_always_fail},
+byte-for-byte identical pass/fail pattern regardless of the varied Ollama `seed`. The
+base model did not behave this way: {base_flip} of its 13 items flipped between pass
+and fail across the {k} runs. So the "{tuned_std:.3f} std dev" for the tuned model
+reflects zero observed sampling variability across these runs, not just a small measured
+number — worth flagging to whoever trains the next version (it may point to the
+merged/quantized model being more deterministic, or to `seed` not affecting this
+model's output; this pass doesn't try to tell those apart).
+
 **Honest statement:** {verdict}
 
 **What did not change:** the mechanism hypothesis — 174 of 263 training records were
@@ -87,6 +98,15 @@ def main():
     overlap = not (min(base_runs) > max(tuned_runs) or max(base_runs) < min(tuned_runs))
     overlap_text = "overlapping ranges" if overlap else "no overlap between the two models' per-run ranges"
 
+    ids = sorted(set(r["id"] for r in results))
+    by_id = {model: {i: {} for i in ids} for model in MODELS}
+    for r in results:
+        for model in MODELS:
+            by_id[model][r["id"]][r["k"]] = r.get(model, {}).get("pass", False)
+    tuned_always_pass = sum(1 for i in ids if all(by_id[MODELS[1]][i][kk] for kk in ks))
+    tuned_always_fail = sum(1 for i in ids if not any(by_id[MODELS[1]][i][kk] for kk in ks))
+    base_flip = sum(1 for i in ids if len(set(by_id[MODELS[0]][i][kk] for kk in ks)) > 1)
+
     if regressed:
         verdict = "The fine-tune regressed, even accounting for run-to-run variance."
     else:
@@ -101,7 +121,7 @@ def main():
             f"regression. But the base model {win_phrase}, with {overlap_text} — a real, "
             "if statistically underpowered, directional signal that the fine-tune "
             "underperforms the base model. Combined with the tuned model's zero "
-            "per-item variance (below), this is genuinely inconclusive rather than a "
+            "per-item variance (above), this is genuinely inconclusive rather than a "
             "clean null result: not the confirmed regression originally claimed, and "
             "not confidently \"no difference\" either."
         )
@@ -122,6 +142,7 @@ def main():
         base_floor=base["regression_floor"], base_ceiling=base["regression_ceiling"],
         inside_outside="OUTSIDE" if regressed else "INSIDE", verdict=verdict,
         base_wins=base_wins, overlap_text=overlap_text,
+        tuned_always_pass=tuned_always_pass, tuned_always_fail=tuned_always_fail, base_flip=base_flip,
     )
     correction_path = HERE.parents[1] / "docs" / "correction.md"
     correction_path.parent.mkdir(exist_ok=True)

@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """Small K=3 variance check of QA Mentor AI's own intent routing, using
-core/variance.py's run_variance_suite against the real live pipeline — closes
-the gap where the variance harness was only ever exercised against the
-separate fine-tune codegen model, never against this case study's own system.
+core/variance.py's run_k_times + variance_report against the real live
+pipeline — closes the gap where the variance harness was only ever exercised
+against the separate fine-tune codegen model, never against this case
+study's own system.
 
-Run with myNanoGpt's venv:
-    ../myNanoGpt/.venv/bin/python3 run_variance_check.py
+Run with myNanoGpt's venv, from this directory (case_studies/01-qa-mentor-ai/):
+    ../../../myNanoGpt/.venv/bin/python3 run_variance_check.py
 """
 import json
 import sys
@@ -15,7 +16,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(HERE.parents[1]))
 from adapter import QAMentorAdapter  # noqa: E402
-from core.variance import run_variance_suite  # noqa: E402
+from core.variance import run_k_times, variance_report  # noqa: E402
 
 # A small, deliberately mixed subset spanning intents and two boundary cases —
 # kept small (K=3 x 6 items = 18 live calls) to stay fast, not exhaustive.
@@ -36,13 +37,9 @@ def main():
     items = load_items()
     assert len(items) == len(SUBSET_IDS), f"expected {len(SUBSET_IDS)} items, found {len(items)}"
 
-    def score_fn(output):
-        return 1.0  # placeholder, replaced per-item below since expected intent varies
-
-    # run_variance_suite's score_fn doesn't know the expected intent per item, so build
-    # one closure per item instead of using a single shared score_fn.
-    from core.variance import run_k_times, variance_report
-
+    # Each item has a different expected intent, so score_fn is built per-item
+    # rather than shared — that's why this uses run_k_times directly instead
+    # of run_variance_suite (which assumes one score_fn for every input).
     per_input = {}
     all_scores = []
     for item in items:

@@ -24,7 +24,18 @@ more flattering one:**
    sweep with that pattern is a real directional signal the single-run band is too
    generous to catch.
 
-**Honest statement:** The single-run noise-band test doesn't flag a statistically significant regression. But the base model won every paired run, with no overlap between the two models' per-run ranges — a real, if statistically underpowered, directional signal that the fine-tune underperforms the base model. Combined with the tuned model's zero per-item variance (below), this is genuinely inconclusive rather than a clean null result: not the confirmed regression originally claimed, and not confidently "no difference" either.
+**Per-item note:** the tuned model's zero stdev is not a rounding artifact — at the
+per-item level, `qa-coder-v2` passed the exact same 3 of 13 holdout
+items on every one of the 5 seeded runs and failed the exact same 10,
+byte-for-byte identical pass/fail pattern regardless of the varied Ollama `seed`. The
+base model did not behave this way: 4 of its 13 items flipped between pass
+and fail across the 5 runs. So the "0.000 std dev" for the tuned model
+reflects zero observed sampling variability across these runs, not just a small measured
+number — worth flagging to whoever trains the next version (it may point to the
+merged/quantized model being more deterministic, or to `seed` not affecting this
+model's output; this pass doesn't try to tell those apart).
+
+**Honest statement:** The single-run noise-band test doesn't flag a statistically significant regression. But the base model won every paired run, with no overlap between the two models' per-run ranges — a real, if statistically underpowered, directional signal that the fine-tune underperforms the base model. Combined with the tuned model's zero per-item variance (above), this is genuinely inconclusive rather than a clean null result: not the confirmed regression originally claimed, and not confidently "no difference" either.
 
 **What did not change:** the mechanism hypothesis — 174 of 263 training records were
 GitHub-mined with a prompt ending in a bulleted scenario list, and the model plausibly
