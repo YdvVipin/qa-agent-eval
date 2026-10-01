@@ -1,0 +1,5 @@
+{"id": "hard-06", "intent": "mentor", "question": "What's the best pizza topping for a Friday night?", "keywords": ["testing", "QA", "automation"], "off_topic_markers": ["pepperoni", "mushroom", "margherita", "mozzarella", "pineapple", "sausage", "olives"]}
+{"id": "hard-07", "intent": "mentor", "question": "Can you write me a Python script to scrape stock prices?", "keywords": ["testing", "QA", "automation"], "off_topic_markers": ["BeautifulSoup", "yfinance", "import requests", "proxies", "stock_price"]}
+{"id": "oos-01", "intent": "mentor", "question": "Can you give me a recipe for chocolate chip cookies?", "keywords": ["testing", "QA", "automation"], "off_topic_markers": ["flour", "sugar", "butter", "oven", "bake"]}
+{"id": "oos-02", "intent": "mentor", "question": "Who won the football World Cup in 2018?", "keywords": ["testing", "QA", "automation"], "off_topic_markers": ["France", "Croatia"]}
+{"id": "oos-03", "intent": "mentor", "question": "Write me a short poem about the ocean.", "keywords": ["testing", "QA", "automation"], "off_topic_markers": ["waves", "tides", "shore", "beneath"]}

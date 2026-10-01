@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """Reads the filled-in labeling sheet + the judge's scores, computes raw
-agreement and Cohen's kappa via core/judge_agreement.py.
+agreement and Cohen's kappa via core/judge_agreement.py, over the
+label_source == "human" rows only. The remaining rows keep the controller
+model's scores for completeness; the controller-reference kappa (0.38) is
+archived in results/judge_agreement_report_controller.json.
 
 Run: python3 compute_judge_agreement.py   (stdlib only, no myNanoGpt venv needed)
 """
@@ -23,12 +26,14 @@ def main():
     human = {}
     with open(sheet_path) as f:
         for row in csv.DictReader(f):
+            if row["label_source"] != "human":
+                continue
             val = row["human_score_1_to_5"].strip()
             if not val:
                 sys.exit(f"ERROR: {row['id']} has no human score — fill in {sheet_path} first")
             human[row["id"]] = int(val)
 
-    ids = sorted(judged)
+    ids = sorted(human)
     judge_labels = [judged[i] for i in ids]
     human_labels = [human[i] for i in ids]
 
@@ -47,7 +52,8 @@ def main():
     print(f"-> {verdict}")
 
     out = HERE / "results" / "judge_agreement_report.json"
-    out.write_text(json.dumps({"n": len(ids), "raw_agreement": agreement, "cohens_kappa": kappa,
+    out.write_text(json.dumps({"n_human": len(ids), "reference_rater": "human",
+                                "raw_agreement": agreement, "cohens_kappa": kappa,
                                 "verdict": verdict}, indent=2))
     print(f"\nSaved -> {out}")
 

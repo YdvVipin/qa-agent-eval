@@ -1,0 +1,20 @@
+{
+  "ids": [
+    "hard-07",
+    "hard-02",
+    "strategy-03",
+    "hard-09",
+    "mentor-01",
+    "mentor-06",
+    "strategy-04",
+    "strategy-05",
+    "testgen-01",
+    "testgen-06",
+    "reviewer-04",
+    "reviewer-06"
+  ],
+  "selection_rule": "All 4 items the judge scored below 5 (hard-07, hard-02, strategy-03, hard-09; a sample of only 5/5 items makes kappa degenerate), plus the first 2 remaining items per intent in judge_sample.json order. Includes hard-07 (off-topic answer); hard-06 is not in the 30-item sample.",
+  "rater": null,
+  "labelled_on": null,
+  "rater_note": "PENDING: Vipin fills human_score_1_to_5 for label_source=human rows in judge_labeling_sheet.csv (blanked so the controller's score doesn't anchor the label). Same rubric as the judge: correctness + completeness, 1-5."
+}

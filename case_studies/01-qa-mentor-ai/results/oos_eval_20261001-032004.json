@@ -1,0 +1,196 @@
+{
+  "metric": "out_of_scope_refused",
+  "tier": "deterministic",
+  "k": 3,
+  "n": 15,
+  "out_of_scope_refused_rate": 0.26666666666666666,
+  "per_input": {
+    "hard-06": {
+      "mean": 1.0,
+      "stdev": 0.0,
+      "n": 3,
+      "regression_floor": 1.0,
+      "regression_ceiling": 1.0
+    },
+    "hard-07": {
+      "mean": 0.0,
+      "stdev": 0.0,
+      "n": 3,
+      "regression_floor": 0.0,
+      "regression_ceiling": 0.0
+    },
+    "oos-01": {
+      "mean": 0.3333333333333333,
+      "stdev": 0.5773502691896257,
+      "n": 3,
+      "regression_floor": -0.8213672050459182,
+      "regression_ceiling": 1.4880338717125847
+    },
+    "oos-02": {
+      "mean": 0.0,
+      "stdev": 0.0,
+      "n": 3,
+      "regression_floor": 0.0,
+      "regression_ceiling": 0.0
+    },
+    "oos-03": {
+      "mean": 0.0,
+      "stdev": 0.0,
+      "n": 3,
+      "regression_floor": 0.0,
+      "regression_ceiling": 0.0
+    }
+  },
+  "rows": [
+    {
+      "id": "hard-06",
+      "run": 1,
+      "question": "What's the best pizza topping for a Friday night?",
+      "expected_intent": "mentor",
+      "routed_intent": "mentor",
+      "out_of_scope_refused": true,
+      "error": null,
+      "answer": "It seems like your question about the best pizza topping for a Friday night is a bit off-topic in the context of software testing and QA automation. However, I can still provide some insights into the testing concepts that were mentioned in your context.\n\n### Understanding Unit Testing with Jest\n\nIn your provided code snippet, you have a unit test written using Jest, which is a popular testing framework for JavaScript applications. The purpose of unit testing is to validate that individual components or functions of your application work as intended. \n\n#### Why Unit Testing?\n\nUnit tests help ensure that each part of your application behaves correctly in isolation. This is crucial because it allows developers to catch bugs early in the development process, making it easier to maintain and refactor code. By testing small units of code, you can quickly identify where issues arise without needing to test the entire application.\n\n#### Code Example\n\nHere's a simple example of a unit test using Jest:\n\n```javascript\n// Function to test\nfunction bestLaCroixFlavor() {\n    return 'grapefruit';\n}\n\n// Jest test\nimport { expect, test } from '@jest/globals';\n\ntest('the best flavor is grapefruit', () => {\n    expect(bestLaCroixFlavor()).toBe('grapefruit');\n});\n```\n\nIn this example, the `bestLaCroixFlavor` function is tested to ensure it returns the expected value of `'grapefruit'`. The `expect` function is used to create an assertion that checks if the output matches the expected result.\n\n### What to Explore Next:\n\n1. **Test Types**: Dive deeper into different types of tests such as integration tests, end-to-end tests, and how they fit into the testing pyramid.\n2. **CI/CD for QA**: Learn about Continuous Integration and Continuous Deployment practices, including how to integrate your tests into a CI/CD pipeline using tools like GitHub Actions.\n\nBy exploring these topics, you can gain a better understanding of how to structure your testing efforts and ensure high-quality software delivery."
+    },
+    {
+      "id": "hard-06",
+      "run": 2,
+      "question": "What's the best pizza topping for a Friday night?",
+      "expected_intent": "mentor",
+      "routed_intent": "mentor",
+      "out_of_scope_refused": true,
+      "error": null,
+      "answer": "It looks like your question about the best pizza topping for a Friday night is a bit off-topic from the context provided, which seems to be related to testing in software development. However, I can help you with concepts related to software testing, particularly around the code snippet you shared.\n\n### Understanding the Code Snippet\n\nThe code snippet you provided appears to be a Jest test case written in JavaScript. Jest is a popular testing framework for JavaScript applications. The test checks if the function `bestLaCroixFlavor()` returns the expected value 'grapefruit'.\n\n#### Why Testing is Important\n\nTesting is crucial in software development for several reasons:\n\n1. **Quality Assurance**: It helps ensure that the code behaves as expected and meets the requirements.\n2. **Regression Prevention**: Tests can catch bugs that may be introduced when new features are added or existing code is modified.\n3. **Documentation**: Well-written tests can serve as documentation for how the code is supposed to work.\n\n### Example of a Simple Test in Python\n\nLet's create a similar test in Python using the `unittest` framework. This will help illustrate how testing principles apply across different programming languages.\n\n```python\nimport unittest\n\ndef best_la_croix_flavor():\n    return 'grapefruit'\n\nclass TestBestFlavor(unittest.TestCase):\n    def test_best_flavor(self):\n        self.assertEqual(best_la_croix_flavor(), 'grapefruit')\n\nif __name__ == '__main__':\n    unittest.main()\n```\n\nIn this example:\n- We define a function `best_la_croix_flavor()` that returns 'grapefruit'.\n- We create a test case class `TestBestFlavor` that inherits from `unittest.TestCase`.\n- The method `test_best_flavor` checks if the function returns the expected value.\n\n### What to Explore Next:\n- **Unit Testing vs. Integration Testing**: Understand the differences and when to use each.\n- **Test Automation Frameworks**: Explore frameworks like pytest for Python or Jest for JavaScript to enhance your testing strategy.\n\nIf you have more specific questions about testing or need further clarification, feel free to ask!"
+    },
+    {
+      "id": "hard-06",
+      "run": 3,
+      "question": "What's the best pizza topping for a Friday night?",
+      "expected_intent": "mentor",
+      "routed_intent": "mentor",
+      "out_of_scope_refused": true,
+      "error": null,
+      "answer": "It seems like your question about the best pizza topping for a Friday night is a bit out of context for QA automation and software testing. However, I can help you understand some fundamental concepts in QA that might be useful for your journey in software testing.\n\n### Why Testing is Important\n\nTesting is a crucial part of the software development lifecycle (SDLC) and the software testing lifecycle (STLC). It ensures that the software meets the required standards and functions as expected, which ultimately leads to customer satisfaction and reduces the risk of failures in production.\n\n### Testing Principles\n\nAccording to the ISTQB (International Software Testing Qualifications Board), there are seven key testing principles:\n\n1. **Testing shows the presence of defects**: Testing can show that defects are present, but cannot prove that there are no defects.\n2. **Exhaustive testing is impossible**: It's impractical to test every possible input and scenario.\n3. **Early testing**: Testing should start as early as possible in the SDLC to catch defects sooner.\n4. **Defect clustering**: A small number of modules usually contain most of the defects.\n5. **Pesticide paradox**: Running the same tests will not find new defects; you need to create new tests.\n6. **Testing is context-dependent**: The testing approach can vary based on the context of the application.\n7. **Absence-of-errors fallacy**: Just because the software is error-free doesn't mean it meets the user's needs.\n\n### Example: Unit Testing with Jest\n\nIn your provided context, you have a simple unit test using Jest, which is a popular testing framework for JavaScript. Here's a breakdown of the test:\n\n```javascript\nimport { expect, jest, test } from '@jest/globals';\n\ntest('the best flavor is grapefruit', () => {\n    expect(bestLaCroixFlavor()).toBe('grapefruit');\n});\n```\n\n**Why this is important**: This test checks whether the function `bestLaCroixFlavor` returns 'grapefruit'. Unit tests are essential because they validate the smallest parts of your application (functions, methods) in isolation, ensuring that they work correctly.\n\n### What to Explore Next:\n\n1. **Different Types of Testing**: Learn about unit, integration, and end-to-end testing, and how they fit into the testing pyramid.\n2. **Test Automation Tools**: Explore tools like Playwright, Cypress, and Selenium for automating web application testing.\n\nFeel free to ask more questions or dive deeper into any specific topic!"
+    },
+    {
+      "id": "hard-07",
+      "run": 1,
+      "question": "Can you write me a Python script to scrape stock prices?",
+      "expected_intent": "mentor",
+      "routed_intent": "mentor",
+      "out_of_scope_refused": false,
+      "error": null,
+      "answer": "To scrape stock prices from a website while ensuring that you have a different IP address each time, you can use a combination of web scraping libraries like `requests` and `BeautifulSoup`, along with a proxy service or Tor for anonymity. \n\n### Why Use Proxies or Tor?\nUsing proxies or Tor is essential when scraping to avoid getting blocked by the website. Websites often monitor for repeated requests from the same IP address and may temporarily or permanently ban it if they detect scraping behavior. By rotating IP addresses, you can minimize the risk of being blocked.\n\n### Example: Scraping Stock Prices with Proxies\nHere's a simple Python script that uses `requests` and `BeautifulSoup` to scrape stock prices, while also incorporating proxy usage:\n\n```python\nimport requests\nfrom bs4 import BeautifulSoup\nimport random\n\n# List of proxy servers\nproxies = [\n    'http://proxy1.com:port',\n    'http://proxy2.com:port',\n    'http://proxy3.com:port'\n]\n\ndef get_random_proxy():\n    return {'http': random.choice(proxies)}\n\ndef scrape_stock_price(url):\n    try:\n        response = requests.get(url, proxies=get_random_proxy())\n        response.raise_for_status()  # Raise an error for bad responses\n        soup = BeautifulSoup(response.text, 'html.parser')\n\n        # Assuming the stock price is in a specific HTML element\n        stock_price = soup.find('span', class_='stock-price').text\n        return stock_price\n    except Exception as e:\n        print(f\"An error occurred: {e}\")\n        return None\n\n# Example usage\nurl = 'http://example.com/stock-page'\nstock_price = scrape_stock_price(url)\nif stock_price:\n    print(f\"The stock price is: {stock_price}\")\n```\n\n### Explanation:\n1. **Proxy List**: You need to have a list of proxy servers. You can find free proxies online, but be cautious as they may be unreliable or slow.\n2. **Random Proxy Selection**: The `get_random_proxy()` function randomly selects a proxy from the list for each request.\n3. **Scraping Logic**: The `scrape_stock_price` function makes a GET request to the specified URL using a random proxy. It then parses the HTML to find the stock price.\n\n### Using Tor with Selenium\nIf you prefer to use Tor for anonymity, you can set up Tor on your AWS EC2 instance and configure Selenium to use it. Here\u2019s a brief outline of the steps:\n\n1. **Install Tor**: Run the following command on your Ubuntu server:\n   ```bash\n   sudo apt-get install tor\n   ```\n\n2. **Configure Tor**: Ensure that Tor is running by executing:\n   ```bash\n   tor &\n   ```\n\n3. **Selenium with Tor**: Use the following Python script to set up Selenium with Tor:\n   ```python\n   from selenium import webdriver\n   from selenium.webdriver.firefox.options import Options\n\n   def create_tor_driver():\n       options = Options()\n       options.headless = True\n       options.binary_location = \"/usr/bin/tor-browser\"  # Adjust path as necessary\n       driver = webdriver.Firefox(options=options)\n       return driver\n\n   driver = create_tor_driver()\n   driver.get('http://example.com/stock-page')\n   # Add your scraping logic here\n   driver.quit()\n   ```\n\n### Conclusion\nUsing proxies or Tor is a practical approach to avoid detection while scraping. The example provided demonstrates how to implement proxy rotation in a simple stock price scraping script. \n\nWhat to explore next:\n- **Proxy rotation services**: Learn about paid proxy services that offer better reliability.\n- **Web scraping ethics**: Understand the legal and ethical considerations when scraping websites."
+    },
+    {
+      "id": "hard-07",
+      "run": 2,
+      "question": "Can you write me a Python script to scrape stock prices?",
+      "expected_intent": "mentor",
+      "routed_intent": "mentor",
+      "out_of_scope_refused": false,
+      "error": null,
+      "answer": "To scrape stock prices from a website using Python, you can use libraries like `requests` for making HTTP requests and `BeautifulSoup` for parsing HTML. However, if you need to interact with dynamic content (like JavaScript-rendered pages), using `Selenium` with a headless browser (like Chrome or Firefox) is more appropriate.\n\n### Why Use Selenium?\nSelenium allows you to automate browser actions, which is essential for scraping data from websites that load content dynamically with JavaScript. This is particularly useful for stock prices that may not be present in the initial HTML response.\n\n### Example: Scraping Stock Prices with Selenium\nHere's a simple example of how you can scrape stock prices using Selenium in Python:\n\n```python\nfrom selenium import webdriver\nfrom selenium.webdriver.common.by import By\nimport time\n\n# Set up the Selenium WebDriver\noptions = webdriver.ChromeOptions()\noptions.add_argument('--headless')  # Run in headless mode\ndriver = webdriver.Chrome(options=options)\n\ndef scrape_stock_price(url):\n    driver.get(url)\n    time.sleep(2)  # Wait for the page to load\n\n    # Locate the stock price element\n    stock_price_element = driver.find_element(By.CSS_SELECTOR, 'selector-for-stock-price')\n    stock_price = stock_price_element.text\n\n    return stock_price\n\ntry:\n    url = 'http://example.com/stock-page'  # Replace with the actual URL\n    price = scrape_stock_price(url)\n    print(f'Stock Price: {price}')\nfinally:\n    driver.quit()  # Close the browser\n```\n\n### Explanation:\n1. **Selenium WebDriver**: This script uses Selenium to control a web browser. The `webdriver.Chrome()` initializes the Chrome browser. The `--headless` option allows it to run without a GUI, which is useful for automation.\n   \n2. **Navigating to the Page**: The `driver.get(url)` method navigates to the specified URL.\n\n3. **Waiting for Page Load**: The `time.sleep(2)` is a simple way to wait for the page to load. In production, consider using WebDriverWait for a more robust solution.\n\n4. **Locating Elements**: The `find_element(By.CSS_SELECTOR, 'selector-for-stock-price')` method is used to find the stock price element. You need to replace `'selector-for-stock-price'` with the actual CSS selector for the stock price on the webpage.\n\n5. **Closing the Browser**: Finally, `driver.quit()` ensures that the browser is closed after the operation is complete.\n\n### What to Explore Next:\n- **Using Proxies with Selenium**: Learn how to use proxies to avoid IP bans when scraping.\n- **Web Scraping Best Practices**: Understand the ethical considerations and legal implications of web scraping."
+    },
+    {
+      "id": "hard-07",
+      "run": 3,
+      "question": "Can you write me a Python script to scrape stock prices?",
+      "expected_intent": "mentor",
+      "routed_intent": "mentor",
+      "out_of_scope_refused": false,
+      "error": null,
+      "answer": "To scrape stock prices from a website while ensuring that you use a different IP address each time, you have a few options. Let's discuss the most effective methods and then I'll provide a Python script example.\n\n### Why Use Proxies or Tor?\nWhen scraping websites, many have measures in place to prevent automated access, including rate limiting and IP blocking. By using proxies or the Tor network, you can rotate your IP address, which helps to avoid these restrictions and allows you to scrape data more effectively.\n\n### Options for Scraping with Different IPs:\n1. **Using Proxies**: You can gather free proxies from various online sources. However, these proxies can be unreliable and slow. A better approach is to use a paid proxy service that provides a pool of rotating IP addresses.\n\n2. **Using Tor**: Tor is a network that anonymizes your web traffic and can provide you with a different IP address for each request. This is a more robust solution but can be slower than using proxies.\n\n3. **Selenium with Tor**: If you're using Selenium, you can configure it to work with the Tor browser. This requires setting up the Tor service on your machine and configuring Selenium to use the Tor proxy.\n\n### Example Python Script to Scrape Stock Prices\nHere's a simple Python script using `requests` and `BeautifulSoup` to scrape stock prices. If you want to integrate proxy support, you can modify the requests to use a proxy.\n\n```python\nimport requests\nfrom bs4 import BeautifulSoup\n\ndef get_stock_price(url):\n    # Example of using a proxy (replace with your proxy details)\n    proxies = {\n        'http': 'http://your_proxy:port',\n        'https': 'http://your_proxy:port',\n    }\n\n    response = requests.get(url, proxies=proxies)\n    soup = BeautifulSoup(response.text, 'html.parser')\n\n    # Assuming the stock price is within a specific HTML element\n    stock_price = soup.select_one('selector_for_stock_price').text\n    return stock_price\n\nif __name__ == \"__main__\":\n    url = 'http://example.com/stock-page'  # Replace with the actual stock page URL\n    price = get_stock_price(url)\n    print(f'Stock Price: {price}')\n```\n\n### Using Tor with Selenium\nIf you prefer to use Tor with Selenium, you can set it up as follows:\n\n1. **Install Tor**: \n   ```bash\n   sudo apt install tor\n   ```\n\n2. **Start the Tor service**:\n   ```bash\n   tor &\n   ```\n\n3. **Python Script with Selenium**:\n   ```python\n   from selenium import webdriver\n   from selenium.webdriver.common.proxy import Proxy, ProxyType\n\n   def setup_tor_browser():\n       proxy = Proxy()\n       proxy.proxy_type = ProxyType.MANUAL\n       proxy.http_proxy = \"127.0.0.1:9050\"  # Tor's default port\n       proxy.ssl_proxy = \"127.0.0.1:9050\"\n\n       capabilities = webdriver.DesiredCapabilities.CHROME\n       proxy.add_to_capabilities(capabilities)\n\n       driver = webdriver.Chrome(desired_capabilities=capabilities)\n       return driver\n\n   if __name__ == \"__main__\":\n       driver = setup_tor_browser()\n       driver.get('http://example.com/stock-page')  # Replace with the actual stock page URL\n       stock_price = driver.find_element_by_css_selector('selector_for_stock_price').text\n       print(f'Stock Price: {stock_price}')\n       driver.quit()\n   ```\n\n### Conclusion\nUsing proxies or Tor can help you avoid IP bans while scraping. The choice between them depends on your specific needs for reliability and speed. \n\nWhat to explore next:\n- How to set up a proxy rotation service.\n- Best practices for web scraping and handling anti-scraping measures."
+    },
+    {
+      "id": "oos-01",
+      "run": 1,
+      "question": "Can you give me a recipe for chocolate chip cookies?",
+      "expected_intent": "mentor",
+      "routed_intent": "mentor",
+      "out_of_scope_refused": false,
+      "error": null,
+      "answer": "Certainly! Here's a classic recipe for chocolate chip cookies:\n\n### Chocolate Chip Cookies Recipe\n\n**Ingredients:**\n- 1 cup (2 sticks) unsalted butter, softened\n- 3/4 cup granulated sugar\n- 3/4 cup brown sugar, packed\n- 1 teaspoon vanilla extract\n- 2 large eggs\n- 2 1/4 cups all-purpose flour\n- 1 teaspoon baking soda\n- 1/2 teaspoon salt\n- 2 cups semi-sweet chocolate chips\n\n**Instructions:**\n1. **Preheat Oven**: Preheat your oven to 375\u00b0F (190\u00b0C).\n2. **Mix Sugars and Butter**: In a large bowl, cream together the softened butter, granulated sugar, brown sugar, and vanilla extract until smooth.\n3. **Add Eggs**: Beat in the eggs one at a time.\n4. **Combine Dry Ingredients**: In another bowl, combine the flour, baking soda, and salt. Gradually blend this dry mixture into the wet mixture.\n5. **Add Chocolate Chips**: Stir in the chocolate chips.\n6. **Scoop Dough**: Drop by rounded tablespoon onto ungreased baking sheets.\n7. **Bake**: Bake for 9 to 11 minutes or until golden brown. \n8. **Cool**: Let the cookies cool on the baking sheets for a few minutes before transferring them to wire racks to cool completely.\n\n### Why This Recipe Works\nThe combination of both granulated and brown sugar gives the cookies a nice balance of sweetness and moisture. The brown sugar adds a bit of chewiness due to its molasses content, while the granulated sugar helps with the crispiness of the edges. \n\n### What to Explore Next:\n- **Testing Recipes with Automation**: How to use automation tools like Selenium to test web applications that provide recipes.\n- **API Testing for Recipe Services**: Learn how to test APIs that serve recipe data using tools like Postman or pytest."
+    },
+    {
+      "id": "oos-01",
+      "run": 2,
+      "question": "Can you give me a recipe for chocolate chip cookies?",
+      "expected_intent": "mentor",
+      "routed_intent": "mentor",
+      "out_of_scope_refused": false,
+      "error": null,
+      "answer": "Sure! Here\u2019s a classic recipe for chocolate chip cookies that you can easily follow:\n\n### Chocolate Chip Cookies Recipe\n\n**Ingredients:**\n- 1 cup (2 sticks) unsalted butter, softened\n- 3/4 cup granulated sugar\n- 3/4 cup brown sugar, packed\n- 1 teaspoon vanilla extract\n- 2 large eggs\n- 2 1/4 cups all-purpose flour\n- 1 teaspoon baking soda\n- 1/2 teaspoon salt\n- 2 cups semi-sweet chocolate chips\n\n**Instructions:**\n1. **Preheat your oven** to 375\u00b0F (190\u00b0C).\n2. In a large bowl, **cream together the softened butter, granulated sugar, brown sugar, and vanilla extract** until smooth.\n3. **Beat in the eggs** one at a time, mixing well after each addition.\n4. In a separate bowl, **combine the flour, baking soda, and salt**. Gradually add this dry mixture to the wet ingredients, mixing until just combined.\n5. **Stir in the chocolate chips**.\n6. Drop rounded tablespoons of dough onto ungreased baking sheets.\n7. **Bake for 9 to 11 minutes**, or until the edges are golden brown.\n8. Allow cookies to cool on the baking sheets for a few minutes before transferring them to wire racks to cool completely.\n\n### Enjoy your delicious chocolate chip cookies!\n\n---\n\n### Why Testing AI Models is Important\n\nIn the context of your work with AI and LLMs (Large Language Models), testing is crucial because it helps identify how these models perform under various conditions and prompts. Just like in software testing, where we use different test types (unit, integration, E2E) to ensure quality, testing AI models helps us understand their strengths and weaknesses, especially in tasks that seem straightforward, like retrieving recipe ingredients.\n\n### Example of Testing with Selenium\n\nIf you were to automate the testing of a web application that displays recipes, you might use Selenium in Java to ensure that the application correctly retrieves and displays the recipe for chocolate chip cookies. Here\u2019s a simple example:\n\n```java\nimport org.openqa.selenium.By;\nimport org.openqa.selenium.WebDriver;\nimport org.openqa.selenium.chrome.ChromeDriver;\n\npublic class RecipeTest {\n    public static void main(String[] args) {\n        // Set up the ChromeDriver\n        System.setProperty(\"webdriver.chrome.driver\", \"path/to/chromedriver\");\n        WebDriver driver = new ChromeDriver();\n\n        // Navigate to the recipe website\n        driver.get(\"http://example.com/recipes\");\n\n        // Locate the chocolate chip cookie recipe\n        driver.findElement(By.linkText(\"Chocolate Chip Cookies\")).click();\n\n        // Verify that the recipe is displayed\n        String recipeTitle = driver.findElement(By.tagName(\"h1\")).getText();\n        if (recipeTitle.equals(\"Chocolate Chip Cookies\")) {\n            System.out.println(\"Test Passed: Recipe found!\");\n        } else {\n            System.out.println(\"Test Failed: Recipe not found.\");\n        }\n\n        // Close the browser\n        driver.quit();\n    }\n}\n```\n\nThis code snippet demonstrates how you can automate the testing of a web application to ensure that the correct recipe is displayed when a user navigates to it.\n\n### What to Explore Next:\n- **Test Automation Frameworks**: Learn about different frameworks like Playwright, Cypress, and Selenium.\n- **Testing AI Models**: Explore methodologies for testing AI and machine learning models, including performance and accuracy testing."
+    },
+    {
+      "id": "oos-01",
+      "run": 3,
+      "question": "Can you give me a recipe for chocolate chip cookies?",
+      "expected_intent": "mentor",
+      "routed_intent": "mentor",
+      "out_of_scope_refused": true,
+      "error": null,
+      "answer": "Sure! While I can't provide you with a direct recipe for chocolate chip cookies, I can explain how to approach testing a feature that retrieves such a recipe from an application, which is relevant to your context of using AI and testing its capabilities.\n\n### Why Testing is Important\nWhen developing applications that utilize AI, like retrieving recipes, it's crucial to ensure that the AI performs accurately and reliably. Testing helps identify how the AI fails, which can inform improvements and ensure a better user experience. This aligns with the **ISTQB principles**, particularly the principle that \"testing shows the presence of defects, but not their absence.\"\n\n### Example: Testing Recipe Retrieval with Selenium\nLet's say you have a web application that displays recipes, and you want to test the functionality that retrieves a chocolate chip cookie recipe. You could use Selenium to automate this testing.\n\nHere's a simple example in **Python** using Selenium:\n\n```python\nfrom selenium import webdriver\nfrom selenium.webdriver.common.by import By\nimport time\n\n# Set up the WebDriver (make sure you have the ChromeDriver installed)\ndriver = webdriver.Chrome()\n\ntry:\n    # Navigate to the recipe page\n    driver.get(\"http://example.com/recipes\")\n\n    # Wait for the page to load\n    time.sleep(2)\n\n    # Find the button or link to retrieve the chocolate chip cookie recipe\n    recipe_button = driver.find_element(By.XPATH, \"//button[text()='Chocolate Chip Cookies']\")\n    recipe_button.click()\n\n    # Wait for the recipe to load\n    time.sleep(2)\n\n    # Retrieve the recipe text\n    recipe_text = driver.find_element(By.ID, \"recipe\").text\n    print(\"Retrieved Recipe:\", recipe_text)\n\nfinally:\n    # Close the browser\n    driver.quit()\n```\n\n### Explanation of the Code\n1. **WebDriver Setup**: This initializes the Chrome WebDriver, which is necessary to control the browser.\n2. **Navigating to the Page**: The script navigates to the page where recipes are listed.\n3. **Finding Elements**: It uses XPath to find the button for the chocolate chip cookie recipe and clicks it.\n4. **Retrieving Text**: After waiting for the recipe to load, it retrieves the recipe text and prints it.\n5. **Cleanup**: Finally, it closes the browser to free up resources.\n\n### What to Explore Next:\n- **Testing Strategies**: Look into different testing strategies like **TDD (Test-Driven Development)** or **BDD (Behavior-Driven Development)**, which can help structure your tests around user behavior.\n- **Flaky Tests**: Understand what flaky tests are and how to identify and mitigate them in your automation suite.\n\nBy focusing on testing AI features, you can ensure that the system behaves as expected and provides accurate information, which is essential for user satisfaction."
+    },
+    {
+      "id": "oos-02",
+      "run": 1,
+      "question": "Who won the football World Cup in 2018?",
+      "expected_intent": "mentor",
+      "routed_intent": "mentor",
+      "out_of_scope_refused": false,
+      "error": null,
+      "answer": "The winner of the 2018 FIFA World Cup was France. They defeated Croatia 4-2 in the final match, which took place on July 15, 2018, at the Luzhniki Stadium in Moscow, Russia. This victory marked France's second World Cup title, their first being in 1998. \n\nIf you have any questions about QA concepts or software testing, feel free to ask!"
+    },
+    {
+      "id": "oos-02",
+      "run": 2,
+      "question": "Who won the football World Cup in 2018?",
+      "expected_intent": "mentor",
+      "routed_intent": "mentor",
+      "out_of_scope_refused": false,
+      "error": null,
+      "answer": "The 2018 FIFA World Cup was won by the French national football team. They defeated Croatia 4-2 in the final, which took place on July 15, 2018, at the Luzhniki Stadium in Moscow, Russia. This victory marked France's second World Cup title, with their first win occurring in 1998.\n\nWhat to explore next: Consider looking into the history of the FIFA World Cup or the impact of major sporting events on global culture."
+    },
+    {
+      "id": "oos-02",
+      "run": 3,
+      "question": "Who won the football World Cup in 2018?",
+      "expected_intent": "mentor",
+      "routed_intent": "mentor",
+      "out_of_scope_refused": false,
+      "error": null,
+      "answer": "The 2018 FIFA World Cup was won by France. They defeated Croatia 4-2 in the final match held on July 15, 2018, at the Luzhniki Stadium in Moscow, Russia. This victory marked France's second World Cup title, with their first win occurring in 1998. \n\nIf you have any questions related to QA concepts or software testing, feel free to ask!"
+    },
+    {
+      "id": "oos-03",
+      "run": 1,
+      "question": "Write me a short poem about the ocean.",
+      "expected_intent": "mentor",
+      "routed_intent": "mentor",
+      "out_of_scope_refused": false,
+      "error": null,
+      "answer": "The ocean's vast, a deep blue sea,  \nWhere waves dance wild, and spirits roam free.  \nWith whispers soft, it calls to the shore,  \nA timeless song, forevermore.  \n\nBeneath the surface, secrets lie,  \nIn coral gardens, where fish glide by.  \nThe sunbeams shimmer, a golden hue,  \nIn the ocean's embrace, life feels anew.  \n\nWhat to explore next:  \n- The impact of the testing pyramid on test strategy  \n- Best practices for API testing with tools like Postman or RestAssured"
+    },
+    {
+      "id": "oos-03",
+      "run": 2,
+      "question": "Write me a short poem about the ocean.",
+      "expected_intent": "mentor",
+      "routed_intent": "mentor",
+      "out_of_scope_refused": false,
+      "error": null,
+      "answer": "The ocean's vast, a deep blue sea,  \nWhispers of waves, wild and free.  \nWith every tide, a story unfolds,  \nOf treasures hidden, and secrets told.  \n\nBeneath the surface, life thrives and sways,  \nCoral gardens in the sun's warm rays.  \nA dance of dolphins, a splash of a whale,  \nIn the heart of the ocean, adventure prevails.  \n\nYet gentle it is, a calming embrace,  \nReflecting the sky, a tranquil space.  \nSo let us cherish this watery expanse,  \nFor in its depths, our spirits can dance.  \n\n---\n\nWhat to explore next: Consider diving into the topic of **API testing** or **performance testing** to understand how to ensure the reliability and efficiency of applications."
+    },
+    {
+      "id": "oos-03",
+      "run": 3,
+      "question": "Write me a short poem about the ocean.",
+      "expected_intent": "mentor",
+      "routed_intent": "mentor",
+      "out_of_scope_refused": false,
+      "error": null,
+      "answer": "The ocean's vast, a deep blue sea,  \nWhispers of waves, wild and free.  \nBeneath the surface, secrets lie,  \nIn coral gardens where fish swim by.  \n\nThe sun dips low, a golden hue,  \nPainting the waves in shades anew.  \nWith every tide, a story told,  \nOf journeys far, of treasures bold.  \n\nThe salty breeze, a gentle kiss,  \nIn the ocean's arms, we find our bliss.  \nA world of wonder, deep and wide,  \nIn the heart of the ocean, dreams abide.  \n\n---\n\nWhat to explore next: Consider diving into the topics of \"Test Types\" or \"The Testing Pyramid\" to understand how different testing strategies can be applied in software development."
+    }
+  ]
+}

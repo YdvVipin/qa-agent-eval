@@ -1,0 +1,7 @@
+{
+  "source": "myNanoGpt/evals/results/20260721-023719.json",
+  "goldens": "original_28.jsonl",
+  "n": 28,
+  "keyword_coverage": 0.832,
+  "tier": "reference_based"
+}

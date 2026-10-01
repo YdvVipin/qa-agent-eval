@@ -1,4 +1,4 @@
-id,question,answer,human_score_1_to_5,label_source
+id,question,answer,human_score_1_to_5
 reviewer-04,"Review this Cypress test:
 ```javascript
 it('loads', () => {
@@ -40,7 +40,7 @@ describe('Button Interaction', () => {
 });
 ```
 
-This revised code addresses the critical issue of using a hard-coded wait by implementing a dynamic wait, improves the test's clarity with a more descriptive name, and includes an assertion to ensure that the test validates the expected outcome.",,human
+This revised code addresses the critical issue of using a hard-coded wait by implementing a dynamic wait, improves the test's clarity with a more descriptive name, and includes an assertion to ensure that the test validates the expected outcome.",5
 hard-01,Review my test strategy for the checkout feature and tell me if I'm missing edge cases.,"## Code Review
 
 ### 🔴 Critical Issues
@@ -135,7 +135,7 @@ describe('Checkout Feature', () => {
 });
 ```
 
-This revised code implements the Page Object Model, adds cleanup after tests, and includes assertions to verify outcomes. It also sets the stage",5,controller
+This revised code implements the Page Object Model, adds cleanup after tests, and includes assertions to verify outcomes. It also sets the stage",5
 testgen-01,Write a Playwright test for a login page using the Page Object Model.,"Here's a complete Playwright test for a login page using the Page Object Model (POM) pattern, following the conventions you've provided.
 
 ### Page Object Model Implementation
@@ -230,7 +230,7 @@ test.describe('Login Page Tests', () => {
 
 4. **Locator Strategy**: The code uses `getByPlaceholder` and `getByRole` for locating elements, adhering to the locator strategy you've specified.
 
-This code is ready to run in a Playwright testing environment. Make sure to adjust URLs, text, and test IDs as necessary to fit your application's specifics.",,human
+This code is ready to run in a Playwright testing environment. Make sure to adjust URLs, text, and test IDs as necessary to fit your application's specifics.",5
 strategy-04,Where should I start when testing a file upload feature?,"## Test Strategy: File Upload Feature
 
 ### 1. Unit Tests
@@ -313,7 +313,7 @@ test(""should reject empty file input"", () => {
 Ensure that the file upload feature includes checks for file size limits and type validation to prevent malicious uploads. Additionally, consider implementing security measures such as scanning uploaded files for malware. Accessibility should also be considered, ensuring that file input fields are properly labeled and usable with assistive technologies. 
 
 ### CI/CD Integration
-Integrate your tests into a CI/CD pipeline using GitHub Actions to ensure that every pull request triggers the test suite, catching issues before they reach production.",,human
+Integrate your tests into a CI/CD pipeline using GitHub Actions to ensure that every pull request triggers the test suite, catching issues before they reach production.",5
 hard-09,How do I test asynchronous code properly?,"## Test Strategy: Testing Asynchronous Code
 
 ### 1. Unit Tests
@@ -392,7 +392,7 @@ test('async function handles error correctly', async () => {
 - **CI/CD Integration**: Ensure that all tests are integrated into your CI/CD pipeline (e.g., using GitHub Actions) to run automatically on every push or pull request.
 - **Security and Accessibility**: If the async operations involve user data, ensure that proper validation and sanitization are in place to prevent security vulnerabilities like SQL injection. Also, ensure that the UI is accessible during loading states (e.g., using ARIA roles).
 
-By following this structured approach, you can effectively test asynchronous code and ensure that it behaves as expected under various conditions.",,human
+By following this structured approach, you can effectively test asynchronous code and ensure that it behaves as expected under various conditions.",4
 testgen-06,Generate a pytest Playwright test for a dropdown selection.,"Here's a complete pytest Playwright test for selecting a dropdown option, following the conventions you've provided:
 
 ```python
@@ -435,7 +435,7 @@ def test_select_random_option(dropdown_page: DropdownPage):
 
 ### Note:
 - Ensure that the dropdown element has the appropriate `data-testid` attribute for the locator to work correctly.
-- Adjust the expected value assertion based on the actual values present in your dropdown options.",,human
+- Adjust the expected value assertion based on the actual values present in your dropdown options.",2
 hard-07,Can you write me a Python script to scrape stock prices?,"When it comes to scraping stock prices while ensuring you have a different IP address for each request, there are a few approaches you can take. Using proxies or a Tor browser are two common methods. Let's explore both options, focusing on the use of proxies since they can be simpler to set up for scraping tasks.
 
 ### Why Use Proxies or Tor?
@@ -520,7 +520,7 @@ Both methods have their pros and cons. Using proxies can be simpler and faster, 
 
 **What to explore next:**
 - The implications of web scraping on website terms of service.
-- Best practices for managing and rotating proxies effectively.",,human
+- Best practices for managing and rotating proxies effectively.",2
 reviewer-06,"Find the issues in this test:
 ```javascript
 test('nav', async ({ page }) => {
@@ -567,7 +567,7 @@ test('should navigate to the correct page when the navigation link is clicked', 
 });
 ``` 
 
-By addressing the critical issues and warnings, the revised code will be more robust, maintainable, and less prone to flakiness.",,human
+By addressing the critical issues and warnings, the revised code will be more robust, maintainable, and less prone to flakiness.",5
 strategy-05,What kinds of tests should I write for a search bar with autocomplete?,"## Test Strategy: Search Bar with Autocomplete
 
 ### 1. Unit Tests
@@ -654,7 +654,7 @@ test('handles special characters correctly', () => {
 
 ### Security and Accessibility Considerations
 - **Security**: Ensure that the autocomplete does not expose sensitive data. Validate and sanitize inputs to prevent injection attacks.
-- **Accessibility**: Ensure that the autocomplete suggestions are keyboard navigable and screen-reader friendly. Test for ARIA attributes and focus management.",,human
+- **Accessibility**: Ensure that the autocomplete suggestions are keyboard navigable and screen-reader friendly. Test for ARIA attributes and focus management.",4
 hard-02,What tests should I write for a password reset flow?,"## Test Strategy: Password Reset Flow
 
 ### 1. Unit Tests
@@ -740,7 +740,7 @@ def test_password_strength_valid():
 - **Accessibility**: Ensure that all form fields have associated labels and are accessible via keyboard navigation. Use tools like Axe or Lighthouse to check for accessibility issues.
 
 ### CI/CD Integration
-Integrate the tests into your CI/CD pipeline using GitHub Actions. This ensures that every commit triggers the test suite, helping catch issues early before they reach production.",,human
+Integrate the tests into your CI/CD pipeline using GitHub Actions. This ensures that every commit triggers the test suite, helping catch issues early before they reach production.",5
 strategy-06,How should I plan testing for a multi-step registration form?,"## Test Strategy: Multi-Step Registration Form
 
 ### 1. Unit Tests
@@ -826,7 +826,7 @@ test('registration wizard persists data across steps', async ({ page }) => {
 ### Security and Accessibility Considerations
 - Ensure that sensitive data (like passwords) is handled securely and that appropriate encryption is in place during transmission.
 - Validate that the form is accessible, including proper labeling of fields and error messages for screen readers.
-- Test for SQL",5,controller
+- Test for SQL",5
 reviewer-07,"Review my test for best practices:
 ```python
 def test_form():
@@ -904,7 +904,7 @@ def test_form_submission_displays_success_message(driver):
     assert form_page.is_success_message_displayed()
 ``` 
 
-This revised code enhances reliability, maintainability, and clarity, ensuring that the test accurately reflects the expected behavior of the application.",5,controller
+This revised code enhances reliability, maintainability, and clarity, ensuring that the test accurately reflects the expected behavior of the application.",5
 strategy-03,How do I approach testing a REST API for a new endpoint?,"## Test Strategy: New REST API Endpoint
 
 ### 1. Unit Tests
@@ -1009,7 +1009,7 @@ Begin with the unit tests for input validation and business logic. These tests a
 Example unit test to start with:
 ```python
 def test_create_user_invalid_email():
-    user_data = {""username"": ""testuser"", ""email",,human
+    user_data = {""username"": ""testuser"", ""email",3
 testgen-02,Generate a pytest test that verifies a GET /users API returns 200 and a JSON list.,"Here is a complete and runnable pytest test that verifies a GET `/users` API returns a status code of 200 and checks that the JSON response is a list. This test will also validate that the response contains the expected structure.
 
 ```python
@@ -1051,7 +1051,7 @@ def test_get_users():
 7. **List Assertion**: It checks that the response is a list and is not empty.
 8. **Property Assertions**: Each user in the list is checked to ensure it contains the expected properties (`id`, `name`, `username`, and `email`).
 
-This test can be run using the command `pytest` in the terminal, assuming you have pytest and requests installed in your environment.",5,controller
+This test can be run using the command `pytest` in the terminal, assuming you have pytest and requests installed in your environment.",5
 testgen-04,Create a Cypress test for adding an item to a shopping cart.,"Here is a complete Cypress test code that follows the conventions and structure you provided. This test will cover the scenario of adding an item to a shopping cart and verifying the total price, as well as completing the purchase.
 
 ```javascript
@@ -1121,7 +1121,7 @@ Then('I will see an alert stating my order was successful, plus an ETA delivery'
 4. **Alerts**: The test checks for an alert message confirming the successful order placement.
 5. **Cypress Commands**: Custom commands like `cy.AddToCart()` are assumed to be defined elsewhere in your Cypress setup.
 
-Make sure to adjust the selectors and messages according to your actual application structure and requirements.",4,controller
+Make sure to adjust the selectors and messages according to your actual application structure and requirements.",4
 testgen-07,Write an API test in Playwright that POSTs to /login and checks for a token.,"Here's a runnable test code in TypeScript using Playwright that performs a POST request to the `/login` endpoint and checks for a token in the response. This follows the conventions you've provided, including the Page Object Model (POM) structure.
 
 ```typescript
@@ -1173,7 +1173,7 @@ test.describe('Login API Tests', () => {
 3. **Test Structure**: The test suite `Login API Tests` is defined using `test.describe`. The `beforeEach` hook initializes the `LoginPage` instance and navigates to the necessary page.
 4. **Assertions**: The test checks that a token is returned upon a successful login.
 
-This code adheres to the conventions specified and is ready to be run in a Playwright testing environment.",5,controller
+This code adheres to the conventions specified and is ready to be run in a Playwright testing environment.",5
 mentor-06,What is contract testing and when should I use it?,"**What is Contract Testing?**
 
 Contract testing is a type of software testing that focuses on the interactions between different services or components in a system. The primary goal of contract testing is to ensure that the expectations (or ""contracts"") between a service provider and a service consumer are met. This is particularly useful when dealing with microservices or external APIs, where different teams may be responsible for different parts of the system.
@@ -1232,7 +1232,7 @@ In this example, we define a contract for a consumer service that expects a spec
 
 **What to Explore Next:**
 - Explore the differences between Contract Testing and Integration Testing.
-- Learn about the Pact framework and how to implement contract testing in a microservices architecture.",,human
+- Learn about the Pact framework and how to implement contract testing in a microservices architecture.",5
 strategy-01,How should I test a user login and authentication flow?,"## Test Strategy: User Login and Authentication Flow
 
 ### 1. Unit Tests
@@ -1319,7 +1319,7 @@ def test_email_validation():
 - Consider accessibility testing for the login form to ensure it is usable for all users, including those using assistive technologies. 
 
 ### CI/CD Integration
-Integrate these tests into your CI/CD pipeline using GitHub Actions to ensure that every commit is validated against your test suite, maintaining the integrity of the authentication flow throughout development.",5,controller
+Integrate these tests into your CI/CD pipeline using GitHub Actions to ensure that every commit is validated against your test suite, maintaining the integrity of the authentication flow throughout development.",5
 mentor-01,What is the Page Object Model pattern and why is it useful?,"The **Page Object Model (POM)** is a design pattern commonly used in test automation, particularly for web applications. In this pattern, each web page is represented as a class, encapsulating the page's elements (locators) and the actions that can be performed on those elements. This abstraction allows for a more organized and maintainable test suite.
 
 ### Why is POM Useful?
@@ -1378,7 +1378,7 @@ The Page Object Model is a powerful design pattern that enhances the maintainabi
 
 What to explore next:
 - **Test Automation Frameworks**: Learn about different frameworks like Selenium, Cypress, and Playwright.
-- **Test Types**: Understand the differences between unit, integration, and end-to-end testing.",,human
+- **Test Types**: Understand the differences between unit, integration, and end-to-end testing.",5
 hard-08,"Here's my test, can you write a better version of it?
 ```python
 def test_x():
@@ -1453,7 +1453,7 @@ def test_some_functionality(setup_environment):
     assert result == expected_value, ""Expected value does not match the result.""
 ```
 
-This revised code includes a proper test structure, meaningful assertions, and a setup fixture to ensure a clean testing environment. It also encourages maintainability and readability, which are crucial for effective test automation.",5,controller
+This revised code includes a proper test structure, meaningful assertions, and a setup fixture to ensure a clean testing environment. It also encourages maintainability and readability, which are crucial for effective test automation.",5
 mentor-07,Explain what shift-left testing means.,"Shift-left testing is a software testing approach that emphasizes performing testing activities earlier in the software development lifecycle (SDLC). The term ""shift-left"" refers to the idea of moving testing processes to the left side of the project timeline, which is typically where requirements and design activities occur. This approach is rooted in the principle of ""test early and often,"" which aims to identify and address defects as soon as possible, rather than waiting until later stages of development, such as during system testing or after deployment.
 
 ### Why Shift-Left Testing?
@@ -1490,7 +1490,7 @@ Shift-left testing is a proactive approach that aligns with modern software deve
 
 **What to explore next:**
 - The role of automated testing in shift-left testing.
-- Best practices for implementing shift-left testing in Agile environments.",5,controller
+- Best practices for implementing shift-left testing in Agile environments.",5
 mentor-02,Explain the test automation pyramid.,"The Test Automation Pyramid is a conceptual framework that helps teams understand how to structure their automated testing efforts effectively. It emphasizes the importance of having a balanced portfolio of tests at different levels of granularity, which can lead to more efficient and maintainable testing practices.
 
 ### Why Use the Test Automation Pyramid?
@@ -1547,7 +1547,7 @@ The Test Automation Pyramid encourages teams to prioritize unit tests, followed 
 
 ### What to Explore Next:
 - **ISTQB Testing Principles**: Understanding the foundational principles that guide effective testing practices.
-- **Test Types**: Delve deeper into different types of tests such as performance, security, and visual testing.",5,controller
+- **Test Types**: Delve deeper into different types of tests such as performance, security, and visual testing.",5
 strategy-02,What is a good test strategy for a payment checkout feature?,"## Test Strategy: Payment Checkout Feature
 
 ### 1. Unit Tests
@@ -1633,7 +1633,7 @@ def test_checkout_empty_address():
 - Implement accessibility testing to ensure that all users can navigate the checkout process effectively, including those using assistive technologies.
 
 ### CI/CD Integration
-Integrate all tests into a CI/CD pipeline using GitHub Actions to ensure that every commit triggers the test suite, allowing for immediate feedback on the checkout feature's stability.",5,controller
+Integrate all tests into a CI/CD pipeline using GitHub Actions to ensure that every commit triggers the test suite, allowing for immediate feedback on the checkout feature's stability.",5
 mentor-05,What is the difference between implicit and explicit waits?,"Understanding the difference between implicit and explicit waits is crucial for effective automation testing with Selenium WebDriver. Both types of waits are used to handle situations where elements are not immediately available in the DOM, but they serve different purposes and have distinct behaviors.
 
 ### Implicit Wait
@@ -1695,7 +1695,7 @@ In general, it is recommended to use explicit waits over implicit waits due to t
 
 **What to explore next:**
 - The different types of conditions you can use with explicit waits.
-- Best practices for handling waits in Selenium tests.",5,controller
+- Best practices for handling waits in Selenium tests.",5
 hard-03,What is a good testing approach when I don't know where to start on a new legacy codebase?,"## Test Strategy: Legacy Codebase Testing
 
 ### 1. Unit Tests
@@ -1765,7 +1765,7 @@ def test_data_merge_empty_lists():
 ### Learning Resources
 - **Books**: ""Working Effectively with Legacy Code"" by Michael Feathers provides strategies for testing and refactoring legacy systems.
 - **Online Courses**: Look for courses on platforms like Udemy or Coursera that focus on testing legacy code and best practices in unit testing.
-- **Communities**: Join QA and testing communities on platforms like Reddit or Stack Overflow to ask questions and share experiences with others facing similar challenges.",5,controller
+- **Communities**: Join QA and testing communities on platforms like Reddit or Stack Overflow to ask questions and share experiences with others facing similar challenges.",5
 hard-04,What is the test automation pyramid and how would I apply it to a new mobile app?,"The Test Automation Pyramid is a conceptual framework that helps teams understand how to structure their automated testing efforts effectively. The pyramid illustrates the different levels of testing, emphasizing that you should have a larger number of low-level tests (like Unit Tests) and fewer high-level tests (like End-to-End Tests). This structure helps ensure that tests are efficient, maintainable, and provide quick feedback.
 
 ### Why the Test Automation Pyramid Matters
@@ -1827,7 +1827,7 @@ By following the Test Automation Pyramid, you ensure that your testing strategy 
 
 What to explore next:
 - The differences between Unit, Integration, and End-to-End testing.
-- Best practices for writing maintainable tests in mobile applications.",5,controller
+- Best practices for writing maintainable tests in mobile applications.",5
 testgen-03,Write a Playwright test that fills a contact form and asserts a success message.,"```typescript
 import { test, expect } from '@playwright/test';
 
@@ -1873,7 +1873,7 @@ test.describe('Contact Form', () => {
 });
 ``` 
 
-This code follows the specified conventions, utilizing the Page Object Model (POM) to encapsulate the contact form interactions. The test case fills out the contact form and asserts that the success message is visible after submission.",5,controller
+This code follows the specified conventions, utilizing the Page Object Model (POM) to encapsulate the contact form interactions. The test case fills out the contact form and asserts that the success message is visible after submission.",5
 reviewer-02,"What's wrong with this test?
 ```javascript
 test('checkout', async ({ page }) => {
@@ -1930,7 +1930,7 @@ test('should navigate to cart and click checkout button', async ({ page }) => {
 });
 ```
 
-This revised version incorporates best practices by eliminating hard-coded waits, adding error handling, and including assertions to verify that the test behaves as expected. This will help ensure the test is more reliable and maintainable.",5,controller
+This revised version incorporates best practices by eliminating hard-coded waits, adding error handling, and including assertions to verify that the test behaves as expected. This will help ensure the test is more reliable and maintainable.",5
 strategy-07,What is the right testing approach for a shopping cart?,"## Test Strategy: Shopping Cart
 
 ### 1. Unit Tests
@@ -2025,7 +2025,7 @@ def test_add_product_increases_cart_count():
 ```
 
 ### Security and Accessibility Concerns
-- Ensure that user data (like product IDs",4,controller
+- Ensure that user data (like product IDs",4
 testgen-05,Write a Playwright test that checks pagination on a results table.,"Here's a complete Playwright test that checks pagination on a results table using the Page Object Model (POM) approach. The test will navigate to a specified page, check if the results table is visible, interact with the pagination controls, and assert that the correct results are displayed.
 
 ### Test Code
@@ -2095,4 +2095,4 @@ test.describe('Pagination on Results Table', () => {
      - The first test checks that the correct results are displayed on the first page.
      - The second test checks that the pagination works correctly and that the expected results are displayed on the next page.
 
-Make sure to adjust the expected results and the URL in the `navigate` method according to your application's specifics.",5,controller
+Make sure to adjust the expected results and the URL in the `navigate` method according to your application's specifics.",5

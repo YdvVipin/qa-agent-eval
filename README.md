@@ -10,9 +10,10 @@ built. It caught a result I had originally overstated —
   assumed), and tiered metrics (deterministic / reference-based / judge-based, so
   you know how much to trust each number).
 - **Applied to QA Mentor AI**, a multi-agent RAG system: routing accuracy is a
-  genuine null result (100% before and after I hardened the benchmark); the
-  gpt-4o-mini judge is WEAK (kappa 0.38); and a fine-tune "regression" I had
-  claimed from single runs didn't survive a K=5 re-measurement.
+  genuine null result (100% before and after I hardened the benchmark), but off-topic
+  questions are redirected only 20% of the time; the gpt-4o-mini judge is WEAK
+  (kappa 0.38); and a fine-tune "regression" I had claimed from single runs
+  didn't survive a K=5 re-measurement.
 - **System-agnostic core:** `core/` is stdlib-only and written against one
   interface, `SystemAdapter` — it never imports a specific system.
 
@@ -39,15 +40,18 @@ a multi-agent RAG QA-automation assistant. Headline findings:
 - Intent-routing accuracy: 100% on the original 28-question golden set, and still
   100% on a hardened 37-question set targeting real routing boundaries. A genuine
   null result — I made my own benchmark harder and the score didn't move — reported
-  as such rather than reframed as a win. (Reading the actual answers during judge
-  scoring did surface a real gap the routing metric missed: one adversarial,
-  intentionally off-topic question got fully answered instead of redirected back to
-  QA topics.)
+  as such rather than reframed as a win.
+- Out-of-scope handling — the gap routing accuracy can't see: off-topic questions
+  route correctly but then get answered in full. A deterministic Tier 1
+  `out_of_scope_refused` metric puts the graceful-redirect rate at **20%** (6/30
+  live runs over 5 off-topic questions, K=3, run twice).
+- Keyword coverage (Tier 2, reference-based proxy): 83.2% on the original 28.
 - Judge reliability: gpt-4o-mini's correctness/completeness judge scored kappa 0.38
   against a 30-item sample — weak, per `METHOD.md`'s own threshold. That sample was
   scored by the controller model directly, not an independently hand-labeled human
   sample; that's a real limitation on this specific number, disclosed here rather
-  than glossed over.
+  than glossed over. A 12-item human-labelled subset is set up and waiting on labels;
+  its kappa will replace this as the primary number.
 - **The correction:** a previous claim that fine-tuning regressed the model's codegen
   quality (4/13 vs 3/13 compile pass rate, single run each) had no variance baseline.
   A K=5 re-run doesn't clear this repo's statistical regression bar, but the base
