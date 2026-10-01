@@ -1,0 +1,296 @@
+{
+  "n": 25,
+  "tier1_accuracy": 1.0,
+  "rows": [
+    {
+      "id": "cs02-01",
+      "rule": "clean audit: one finding, verbatim quote, known rule",
+      "expected": {
+        "exit_code": 0
+      },
+      "exit_code": 0,
+      "outcome": "accept",
+      "error": null,
+      "pass": true
+    },
+    {
+      "id": "cs02-02",
+      "rule": "nothing found is a valid audit result",
+      "expected": {
+        "exit_code": 0
+      },
+      "exit_code": 0,
+      "outcome": "accept",
+      "error": null,
+      "pass": true
+    },
+    {
+      "id": "cs02-03",
+      "rule": "two valid findings in one submission",
+      "expected": {
+        "exit_code": 0
+      },
+      "exit_code": 0,
+      "outcome": "accept",
+      "error": null,
+      "pass": true
+    },
+    {
+      "id": "cs02-04",
+      "rule": "a finding citing a rule the rubric doesn't define is refused",
+      "expected": {
+        "exit_code": 1,
+        "error_contains": "unknown rule"
+      },
+      "exit_code": 1,
+      "outcome": "reject",
+      "error": "unknown rule \"AMB-MADE-UP\" \u2014 rubric ambiguity/1 defines: AMB-VAGUE-QUANT, AMB-MISSING-ACTOR, AMB-OPEN-LIST, AMB-UNTESTABLE",
+      "pass": true
+    },
+    {
+      "id": "cs02-05",
+      "rule": "a quote that isn't in the requirement text is refused",
+      "expected": {
+        "exit_code": 1,
+        "error_contains": "quote not found"
+      },
+      "exit_code": 1,
+      "outcome": "reject",
+      "error": "quote not found in requirement text: \"processed within a day\"",
+      "pass": true
+    },
+    {
+      "id": "cs02-06",
+      "rule": "a quote must be verbatim: a case change is refused",
+      "expected": {
+        "exit_code": 1,
+        "error_contains": "quote not found"
+      },
+      "exit_code": 1,
+      "outcome": "reject",
+      "error": "quote not found in requirement text: \"Processed Quickly\"",
+      "pass": true
+    },
+    {
+      "id": "cs02-07",
+      "rule": "a whitespace-only quote is refused",
+      "expected": {
+        "exit_code": 1,
+        "error_contains": "quote is blank"
+      },
+      "exit_code": 1,
+      "outcome": "reject",
+      "error": "quote is blank: \"   \"",
+      "pass": true
+    },
+    {
+      "id": "cs02-08",
+      "rule": "a question using internal terminology is refused",
+      "expected": {
+        "exit_code": 1,
+        "error_contains": "internal terminology"
+      },
+      "exit_code": 1,
+      "outcome": "reject",
+      "error": "question contains internal terminology (\"derived_from\") \u2014 rewrite in plain language suitable for a project manager",
+      "pass": true
+    },
+    {
+      "id": "cs02-09",
+      "rule": "a suggested answer using internal terminology is refused",
+      "expected": {
+        "exit_code": 1,
+        "error_contains": "internal terminology"
+      },
+      "exit_code": 1,
+      "outcome": "reject",
+      "error": "suggestedAnswer contains internal terminology (\"sourceRef\") \u2014 rewrite in plain language suitable for a project manager",
+      "pass": true
+    },
+    {
+      "id": "cs02-10",
+      "rule": "a confidence outside the enum is refused",
+      "expected": {
+        "exit_code": 1,
+        "error_contains": "confidence"
+      },
+      "exit_code": 1,
+      "outcome": "reject",
+      "error": "[\n  {\n    \"code\": \"invalid_value\",\n    \"values\": [\n      \"high\",\n      \"medium\",\n      \"low\",\n      \"unknown\"\n    ],\n    \"path\": [\n      0,\n      \"confidence\"\n    ],\n    \"message\": \"Invalid option: expected one of \\\"high\\\"|\\\"medium\\\"|\\\"low\\\"|\\\"unknown\\\"\"\n  }\n]",
+      "pass": true
+    },
+    {
+      "id": "cs02-11",
+      "rule": "all-or-nothing: one bad finding refuses the whole batch",
+      "expected": {
+        "exit_code": 1,
+        "error_contains": "unknown rule"
+      },
+      "exit_code": 1,
+      "outcome": "reject",
+      "error": "unknown rule \"AMB-MADE-UP\" \u2014 rubric ambiguity/1 defines: AMB-VAGUE-QUANT, AMB-MISSING-ACTOR, AMB-OPEN-LIST, AMB-UNTESTABLE",
+      "pass": true
+    },
+    {
+      "id": "cs02-12",
+      "rule": "auditing a requirement id that doesn't exist is refused",
+      "expected": {
+        "exit_code": 1,
+        "error_contains": "no artifact with id"
+      },
+      "exit_code": 1,
+      "outcome": "reject",
+      "error": "no artifact with id requirement_deadbeef",
+      "pass": true
+    },
+    {
+      "id": "cs02-13",
+      "rule": "a finding cannot be written through the raw record path",
+      "expected": {
+        "exit_code": 1,
+        "error_contains": "cannot be recorded directly"
+      },
+      "exit_code": 1,
+      "outcome": "reject",
+      "error": "a finding cannot be recorded directly \u2014 use audit_submit (it checks the quote is verbatim and the rule exists)",
+      "pass": true
+    },
+    {
+      "id": "cs02-14",
+      "rule": "gate: a live question on a changed requirement blocks",
+      "expected": {
+        "exit_code": 1
+      },
+      "exit_code": 1,
+      "outcome": "reject",
+      "error": "(node:1149524) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)",
+      "pass": true
+    },
+    {
+      "id": "cs02-15",
+      "rule": "gate: once the question is answered, the release passes",
+      "expected": {
+        "exit_code": 0
+      },
+      "exit_code": 0,
+      "outcome": "accept",
+      "error": null,
+      "pass": true
+    },
+    {
+      "id": "cs02-16",
+      "rule": "gate: an unrelated requirement with nothing open passes",
+      "expected": {
+        "exit_code": 0
+      },
+      "exit_code": 0,
+      "outcome": "accept",
+      "error": null,
+      "pass": true
+    },
+    {
+      "id": "cs02-17",
+      "rule": "gate --record while blocked records a hold and still fails",
+      "expected": {
+        "exit_code": 1
+      },
+      "exit_code": 1,
+      "outcome": "reject",
+      "error": "(node:1149627) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)",
+      "pass": true
+    },
+    {
+      "id": "cs02-18",
+      "rule": "gate: an override with nobody named is refused",
+      "expected": {
+        "exit_code": 2,
+        "error_contains": "--approved-by"
+      },
+      "exit_code": 2,
+      "outcome": "error",
+      "error": "--override-reason and --approved-by must be given together\n(node:1149652) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)",
+      "pass": true
+    },
+    {
+      "id": "cs02-19",
+      "rule": "gate: a named override ships over the blocker",
+      "expected": {
+        "exit_code": 0
+      },
+      "exit_code": 0,
+      "outcome": "accept",
+      "error": null,
+      "pass": true
+    },
+    {
+      "id": "cs02-20",
+      "rule": "gate: an empty store is an error, not a clean release",
+      "expected": {
+        "exit_code": 2
+      },
+      "exit_code": 2,
+      "outcome": "error",
+      "error": "the trace store is empty \u2014 check QA_SPINE_DB points at a real store\n(node:1149688) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)",
+      "pass": true
+    },
+    {
+      "id": "cs02-21",
+      "rule": "gate: nothing to assess (no --changed) is an error, not a pass",
+      "expected": {
+        "exit_code": 2,
+        "error_contains": "nothing to assess"
+      },
+      "exit_code": 2,
+      "outcome": "error",
+      "error": "nothing to assess: pass --changed, or --since to derive refs from git\n(node:1149705) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)",
+      "pass": true
+    },
+    {
+      "id": "cs02-22",
+      "rule": "fixtures: data that satisfies the schema and locale is recorded",
+      "expected": {
+        "exit_code": 0
+      },
+      "exit_code": 0,
+      "outcome": "accept",
+      "error": null,
+      "pass": true
+    },
+    {
+      "id": "cs02-23",
+      "rule": "fixtures: a phone number wrong for the locale refuses the batch",
+      "expected": {
+        "exit_code": 1,
+        "error_contains": "fixtures rejected"
+      },
+      "exit_code": 1,
+      "outcome": "reject",
+      "error": "fixtures rejected, nothing recorded \u2014 fixture 1: $.phone: is not a valid phone for en-GB",
+      "pass": true
+    },
+    {
+      "id": "cs02-24",
+      "rule": "fixtures: an unknown locale is refused",
+      "expected": {
+        "exit_code": 1,
+        "error_contains": "no locale pack"
+      },
+      "exit_code": 1,
+      "outcome": "reject",
+      "error": "no locale pack \"xx-XX\" \u2014 available: de-DE, en-GB, en-IN, en-US",
+      "pass": true
+    },
+    {
+      "id": "cs02-25",
+      "rule": "fixtures: a schema keyword the validator doesn't check is refused",
+      "expected": {
+        "exit_code": 1,
+        "error_contains": "unsupported keyword"
+      },
+      "exit_code": 1,
+      "outcome": "reject",
+      "error": "unsupported keyword \"oneOf\" at $.name \u2014 it would not be checked, so it is refused",
+      "pass": true
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "per_input": {
+    "cs02-01": {
+      "mean": 1.0,
+      "stdev": 0.0,
+      "n": 3,
+      "regression_floor": 1.0,
+      "regression_ceiling": 1.0
+    },
+    "cs02-05": {
+      "mean": 1.0,
+      "stdev": 0.0,
+      "n": 3,
+      "regression_floor": 1.0,
+      "regression_ceiling": 1.0
+    },
+    "cs02-11": {
+      "mean": 1.0,
+      "stdev": 0.0,
+      "n": 3,
+      "regression_floor": 1.0,
+      "regression_ceiling": 1.0
+    },
+    "cs02-14": {
+      "mean": 1.0,
+      "stdev": 0.0,
+      "n": 3,
+      "regression_floor": 1.0,
+      "regression_ceiling": 1.0
+    },
+    "cs02-15": {
+      "mean": 1.0,
+      "stdev": 0.0,
+      "n": 3,
+      "regression_floor": 1.0,
+      "regression_ceiling": 1.0
+    },
+    "cs02-23": {
+      "mean": 1.0,
+      "stdev": 0.0,
+      "n": 3,
+      "regression_floor": 1.0,
+      "regression_ceiling": 1.0
+    }
+  },
+  "overall": {
+    "mean": 1.0,
+    "stdev": 0.0,
+    "n": 18,
+    "regression_floor": 1.0,
+    "regression_ceiling": 1.0
+  },
+  "k": 3,
+  "subset": [
+    "cs02-01",
+    "cs02-05",
+    "cs02-11",
+    "cs02-14",
+    "cs02-15",
+    "cs02-23"
+  ]
+}

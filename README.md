@@ -14,11 +14,15 @@ built. It caught a result I had originally overstated —
   questions are redirected only 20% of the time; the gpt-4o-mini judge is WEAK
   (kappa 0.38); and a fine-tune "regression" I had claimed from single runs
   didn't survive a K=5 re-measurement.
+- **Applied to a second, architecturally different system**, qa-spine (a
+  validation server with no model inside): 25/25 goldens, zero variance across
+  K=3 — with `core/` reused unchanged.
 - **System-agnostic core:** `core/` is stdlib-only and written against one
   interface, `SystemAdapter` — it never imports a specific system.
 
-Reproduce the headline numbers from committed results in one command, no server
-or API key: `cd case_studies/01-qa-mentor-ai && python3 demo_from_committed.py`.
+Reproduce the headline numbers from committed results, no server or API key:
+`python3 case_studies/01-qa-mentor-ai/demo_from_committed.py` and
+`python3 case_studies/02-qa-spine/demo_from_committed.py`.
 
 Implementation plan for Claude Code: [docs/CLAUDE_CODE_PLAN.md](docs/CLAUDE_CODE_PLAN.md).
 
@@ -60,11 +64,25 @@ a multi-agent RAG QA-automation assistant. Headline findings:
   clean "no difference" the single-run band alone would say. See
   [`docs/correction.md`](docs/correction.md) for the full re-measurement.
 
+## Case study 02 — qa-spine
+
+[`case_studies/02-qa-spine/`](case_studies/02-qa-spine/README.md) — an MCP server
+for the QA lifecycle that never calls a model itself. Instead, it validates what a
+calling agent submits: findings must cite a real rubric rule and quote the
+requirement verbatim, and a release can't ship over an open question unless someone
+named overrides it. A new `SystemAdapter` drives qa-spine's own CLI.
+
+- Tier 1 golden accuracy: 100% (25/25) across audit validation, the release gate,
+  and test-data validation. Two goldens I'd written wrong on the first pass were
+  corrected against qa-spine's own tests, and that's disclosed.
+- Variance: K=3 on 6 goldens, stdev 0.00. That's the expected result for a server
+  with no model in it, measured rather than assumed, using the same `core/variance.py`
+  that measures noise in CS01.
+
 ## Status
 
-One case study, complete. A second case study is planned against an existing,
-architecturally different sibling system (qa-spine, an MCP QA-lifecycle server
-that never calls a model itself), via a new `SystemAdapter` with `core/` unchanged.
+Two case studies, both complete. `core/` was not modified to add the second one.
+Pending: human labels for the 12-item kappa subset in case study 01.
 
 ## Running it
 
@@ -72,10 +90,14 @@ that never calls a model itself), via a new `SystemAdapter` with `core/` unchang
 committed `results/` files:
 
 ```bash
-cd case_studies/01-qa-mentor-ai && python3 demo_from_committed.py
+python3 case_studies/01-qa-mentor-ai/demo_from_committed.py
+python3 case_studies/02-qa-spine/demo_from_committed.py
 ```
 
-**Live path** — re-runs against the real system. This assumes a sibling checkout of
+Case study 02 live: see its [README](case_studies/02-qa-spine/README.md#running-it)
+(sibling qa-spine checkout, Node ≥ 22.5, stdlib Python).
+
+**Case study 01 live path** — re-runs against the real system. This assumes a sibling checkout of
 `myNanoGpt` (the QA Mentor AI system being evaluated) at `../myNanoGpt` relative to
 this repo, with its own server running (`uvicorn chat_api:app --host 0.0.0.0 --port
 8004` from within that repo) and an `OPENAI_API_KEY` in its `.env` for the judge
