@@ -3,6 +3,9 @@
 A multi-agent RAG assistant for QA automation (myNanoGpt / QA Mentor AI), evaluated
 with the method in `../../METHOD.md`.
 
+Every number below is in a committed file under `results/`. To print them all
+without a live server or API key: `python3 demo_from_committed.py`.
+
 ## Intent routing: old set vs. hardened set
 
 Intent-routing accuracy is a **Tier 1 (deterministic)** metric per `core/metrics.py`'s
